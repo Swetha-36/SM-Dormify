@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Remixicon (for icons) -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Your Custom CSS -->
+    <!-- Global styles for whole site -->
+<link rel="stylesheet" href="style.css?v=3">
+
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <title>SM DORMIFY</title>
+
+    <!-- ✅ INLINE STYLES TO OVERRIDE BOOTSTRAP BUTTONS -->
+    <style>
+        /* Force yellow buttons for Login/Register modals */
+        #loginModal .btn-primary,
+        #registerModal .btn-primary {
+            background-color: #f6ac0f !important;
+            border: none !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            padding: 14px 0 !important;
+            border-radius: 8px !important;
+            transition: all 0.3s ease;
+        }
+
+        #loginModal .btn-primary:hover,
+        #registerModal .btn-primary:hover {
+            background-color: #d89a0d !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(246, 172, 15, 0.4) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 🔹 Navbar -->
+    <nav>
+        <div class="nav__bar">
+            <div class="nav__header">
+                <div class="logo nav__logo">
+                    <div>SM</div>
+                    <span>DORMIFY</span>
+                </div>
+                <div class="nav__menu__btn" id="menu-btn">
+                    <i class="ri-menu-line"></i>
+                </div>
+            </div>
+
+            <ul class="nav__links" id="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="rooms1.php">Room</a></li>
+                <li><a href="#feature">Feature</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li>
+                    <button type="button" class="btn btn-outline-dark shadow-none me-lg-3 me-2" 
+                            data-bs-toggle="modal" data-bs-target="#loginModal">
+                        Login
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 🔹 Header -->
+    <header class="header" id="home">
+        <div class="section__container header__container">
+            <h1>The Right Room,<br />Right Now</h1>
+        </div>
+    </header>
+
+    <!-- 🔹 Booking Section -->
+    <?php require('book.php'); ?>
+
+    <!-- 🔹 About Section -->
+    <?php require('about.php'); ?>
+
+    <!-- 🔹 Rooms -->
+ 
+
+    <!-- 🔹 Intro Section -->
+    <?php require('intro.php'); ?>
+
+    <!-- 🔹 Features -->
+    <?php require('features.php'); ?>
+
+    <!-- 🔹 Menu Section -->
+    <?php require('menu.php'); ?>
+
+    <!-- 🔹 Footer -->
+    <?php require('footer.php'); ?>
+
+    <!-- 🔹 Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-3 overflow-hidden">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title d-flex align-items-center" id="loginModalLabel">
+                        <i class="ri-user-line fs-3 me-2 text-primary"></i>
+                        Sign In / Login
+                    </h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form action="login.php" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Email address</label>
+                            <input type="email" name="t2" class="form-control shadow-none" 
+                                   placeholder="Enter your email" required />
+                            <div id="emailHelp" class="form-text">
+                                We'll never share your email with anyone else.
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Password</label>
+                            <div class="input-group">
+                                <input type="password" name="t6" id="loginPassword" 
+                                       class="form-control shadow-none" placeholder="Enter your password" required />
+                                <button class="btn btn-outline-secondary shadow-none" type="button" 
+                                        onclick="togglePassword('loginPassword', 'toggleLoginIcon')">
+                                    <i class="ri-eye-line" id="toggleLoginIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <a href="javascript: void(0)" class="text-secondary text-decoration-none">Forgot Password?</a>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary w-100 shadow-none mb-2">
+                                <i class="ri-login-box-line me-2"></i>Login
+                            </button>
+                        </div>
+
+                        <div class="text-center mt-2">
+                            <small class="text-muted">
+                                Don't have an account? 
+                                <a href="#" class="text-primary text-decoration-none" 
+                                   data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">
+                                    Register here
+                                </a>
+                            </small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔹 Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg rounded-3 overflow-hidden">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title d-flex align-items-center" id="registerModalLabel">
+                        <i class="ri-user-add-line fs-3 me-2 text-primary"></i>
+                        Create Account
+                    </h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form action="register.php" method="POST" id="registerForm">
+                    <div class="modal-body" style="max-height: 450px; overflow-y: auto;">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="t1" class="form-control shadow-none" 
+                                   placeholder="Enter your full name" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" name="t2" class="form-control shadow-none" 
+                                   placeholder="example@email.com" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" name="t3" class="form-control shadow-none" 
+                                   placeholder="Enter your phone number" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <textarea name="t4" class="form-control shadow-none" rows="2" 
+                                      placeholder="Enter your complete address" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Qualification</label>
+                            <select name="t5" class="form-select shadow-none" required>
+                                <option value="" selected disabled>Select your qualification</option>
+                                <option value="High School">High School</option>
+                                <option value="Diploma">Diploma</option>
+                                <option value="Bachelor's Degree">Bachelor's Degree</option>
+                                <option value="Master's Degree">Master's Degree</option>
+                                <option value="PhD">PhD</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <div class="input-group">
+                                <input type="password" name="t6" id="registerPassword" 
+                                       class="form-control shadow-none" placeholder="Create a strong password" 
+                                       minlength="8" required />
+                                <button class="btn btn-outline-secondary shadow-none" type="button" 
+                                        onclick="togglePassword('registerPassword', 'toggleRegisterIcon')">
+                                    <i class="ri-eye-line" id="toggleRegisterIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Confirm Password</label>
+                            <div class="input-group">
+                                <input type="password" name="t7" id="confirmPassword" 
+                                       class="form-control shadow-none" placeholder="Re-enter your password" 
+                                       minlength="8" required />
+                                <button class="btn btn-outline-secondary shadow-none" type="button" 
+                                        onclick="togglePassword('confirmPassword', 'toggleConfirmIcon')">
+                                    <i class="ri-eye-line" id="toggleConfirmIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <small class="text-muted">
+                                Already have an account? 
+                                <a href="#" class="text-primary text-decoration-none" 
+                                   data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">
+                                    Login here
+                                </a>
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-top pt-3">
+                        <button type="submit" class="btn btn-primary w-100 shadow-none">
+                            <i class="ri-user-add-line me-2"></i>Register Now
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Password Toggle Script -->
+    <script>
+        function togglePassword(fieldId, iconId) {
+            const passwordField = document.getElementById(fieldId);
+            const toggleIcon = document.getElementById(iconId);
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('ri-eye-line');
+                toggleIcon.classList.add('ri-eye-off-line');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('ri-eye-off-line');
+                toggleIcon.classList.add('ri-eye-line');
+            }
+        }
+
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const navLinks = document.getElementById('nav-links');
+        
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+        });
+    </script>
+
+    <!-- ScrollReveal -->
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="main.js"></script>
+</body>
+</html>
