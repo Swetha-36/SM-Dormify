@@ -123,7 +123,7 @@
 <body>
     <section class="booking">
         <div class="section__container booking__container">
-            <form action="available_rooms.php" method="POST">
+            <form action="rooms1.php" method="POST">
                 <!-- Room Type -->
                 <div class="input__group">
                     <label for="roomType" class="form-label fw-semibold">

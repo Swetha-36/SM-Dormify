@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,7 +13,7 @@
 
     <!-- Your Custom CSS -->
     <!-- Global styles for whole site -->
-<link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=3">
 
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <title>SM DORMIFY</title>
@@ -61,11 +62,34 @@
                 <li><a href="#feature">Feature</a></li>
                 <li><a href="#menu">Menu</a></li>
                 <li>
-                    <button type="button" class="btn btn-outline-dark shadow-none me-lg-3 me-2" 
+
+                    <?php
+                    session_start();
+                    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+                        // Show profile icon button
+                    ?>
+                        <button type="button" class="btn btn-outline-dark shadow-none me-lg-3 me-2"
+                            data-bs-toggle="modal" data-bs-target="#profileModal">
+                            <i class="ri-user-3-fill"></i>
+                        </button>
+                    <?php
+                    } else {
+                        // Show login button
+                    ?>
+                        <button type="button" class="btn btn-outline-dark shadow-none me-lg-3 me-2"
                             data-bs-toggle="modal" data-bs-target="#loginModal">
-                        Login
-                    </button>
+                            Login
+                        </button>
+                    <?php
+                    }
+                    ?>
                 </li>
+            </ul>
+
+            </li>
+            </ul>
+
+            </li>
             </ul>
         </div>
     </nav>
@@ -84,7 +108,7 @@
     <?php require('about.php'); ?>
 
     <!-- 🔹 Rooms -->
- 
+    <?php require('rooms.php'); ?>
 
     <!-- 🔹 Intro Section -->
     <?php require('intro.php'); ?>
@@ -114,8 +138,8 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Email address</label>
-                            <input type="email" name="t2" class="form-control shadow-none" 
-                                   placeholder="Enter your email" required />
+                            <input type="email" name="t2" class="form-control shadow-none"
+                                placeholder="Enter your email" required />
                             <div id="emailHelp" class="form-text">
                                 We'll never share your email with anyone else.
                             </div>
@@ -124,10 +148,10 @@
                         <div class="mb-4">
                             <label class="form-label">Password</label>
                             <div class="input-group">
-                                <input type="password" name="t6" id="loginPassword" 
-                                       class="form-control shadow-none" placeholder="Enter your password" required />
-                                <button class="btn btn-outline-secondary shadow-none" type="button" 
-                                        onclick="togglePassword('loginPassword', 'toggleLoginIcon')">
+                                <input type="password" name="t6" id="loginPassword"
+                                    class="form-control shadow-none" placeholder="Enter your password" required />
+                                <button class="btn btn-outline-secondary shadow-none" type="button"
+                                    onclick="togglePassword('loginPassword', 'toggleLoginIcon')">
                                     <i class="ri-eye-line" id="toggleLoginIcon"></i>
                                 </button>
                             </div>
@@ -139,15 +163,15 @@
 
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary w-100 shadow-none mb-2">
-                                <i class="ri-login-box-line me-2"></i>Login
+                                Login
                             </button>
                         </div>
 
                         <div class="text-center mt-2">
                             <small class="text-muted">
-                                Don't have an account? 
-                                <a href="#" class="text-primary text-decoration-none" 
-                                   data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">
+                                Don't have an account?
+                                <a href="#" class="text-primary text-decoration-none"
+                                    data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">
                                     Register here
                                 </a>
                             </small>
@@ -174,26 +198,26 @@
                     <div class="modal-body" style="max-height: 450px; overflow-y: auto;">
                         <div class="mb-3">
                             <label class="form-label">Full Name</label>
-                            <input type="text" name="t1" class="form-control shadow-none" 
-                                   placeholder="Enter your full name" required />
+                            <input type="text" name="t1" class="form-control shadow-none"
+                                placeholder="Enter your full name" required />
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Email Address</label>
-                            <input type="email" name="t2" class="form-control shadow-none" 
-                                   placeholder="example@email.com" required />
+                            <input type="email" name="t2" class="form-control shadow-none"
+                                placeholder="example@email.com" required />
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Phone Number</label>
-                            <input type="tel" name="t3" class="form-control shadow-none" 
-                                   placeholder="Enter your phone number" required />
+                            <input type="tel" name="t3" class="form-control shadow-none"
+                                placeholder="Enter your phone number" required />
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Address</label>
-                            <textarea name="t4" class="form-control shadow-none" rows="2" 
-                                      placeholder="Enter your complete address" required></textarea>
+                            <textarea name="t4" class="form-control shadow-none" rows="2"
+                                placeholder="Enter your complete address" required></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -212,11 +236,11 @@
                         <div class="mb-3">
                             <label class="form-label">Password</label>
                             <div class="input-group">
-                                <input type="password" name="t6" id="registerPassword" 
-                                       class="form-control shadow-none" placeholder="Create a strong password" 
-                                       minlength="8" required />
-                                <button class="btn btn-outline-secondary shadow-none" type="button" 
-                                        onclick="togglePassword('registerPassword', 'toggleRegisterIcon')">
+                                <input type="password" name="t6" id="registerPassword"
+                                    class="form-control shadow-none" placeholder="Create a strong password"
+                                    minlength="8" required />
+                                <button class="btn btn-outline-secondary shadow-none" type="button"
+                                    onclick="togglePassword('registerPassword', 'toggleRegisterIcon')">
                                     <i class="ri-eye-line" id="toggleRegisterIcon"></i>
                                 </button>
                             </div>
@@ -225,11 +249,11 @@
                         <div class="mb-3">
                             <label class="form-label">Confirm Password</label>
                             <div class="input-group">
-                                <input type="password" name="t7" id="confirmPassword" 
-                                       class="form-control shadow-none" placeholder="Re-enter your password" 
-                                       minlength="8" required />
-                                <button class="btn btn-outline-secondary shadow-none" type="button" 
-                                        onclick="togglePassword('confirmPassword', 'toggleConfirmIcon')">
+                                <input type="password" name="t7" id="confirmPassword"
+                                    class="form-control shadow-none" placeholder="Re-enter your password"
+                                    minlength="8" required />
+                                <button class="btn btn-outline-secondary shadow-none" type="button"
+                                    onclick="togglePassword('confirmPassword', 'toggleConfirmIcon')">
                                     <i class="ri-eye-line" id="toggleConfirmIcon"></i>
                                 </button>
                             </div>
@@ -237,9 +261,9 @@
 
                         <div class="text-center">
                             <small class="text-muted">
-                                Already have an account? 
-                                <a href="#" class="text-primary text-decoration-none" 
-                                   data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">
+                                Already have an account?
+                                <a href="#" class="text-primary text-decoration-none"
+                                    data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">
                                     Login here
                                 </a>
                             </small>
@@ -255,6 +279,103 @@
             </div>
         </div>
     </div>
+    <!-- Profile Details Modal -->
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0 bg-primary bg-opacity-10">
+                    <h5 class="modal-title d-flex align-items-center" id="profileModalLabel">
+                        <i class="ri-user-3-line fs-4 me-2 text-primary"></i>
+                        My Profile
+                    </h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
+
+                        <!-- Profile Picture/Icon -->
+                        <div class="text-center mb-4">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                style="width: 100px; height: 100px;">
+                                <i class="ri-user-3-fill" style="font-size: 3rem; color: #0f1a2c;"></i>
+                            </div>
+                            <h4 class="mt-3 mb-1 fw-bold"><?php echo htmlspecialchars($_SESSION['user_name']); ?></h4>
+                            <p class="text-muted mb-0">Member</p>
+                        </div>
+
+                        <!-- Profile Details -->
+                        <div class="card border-0 bg-light mb-3">
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-12 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-mail-line fs-5 text-primary me-3 mt-1"></i>
+                                            <div class="flex-grow-1">
+                                                <small class="text-muted d-block">Email Address</small>
+                                                <strong><?php echo htmlspecialchars($_SESSION['user_email']); ?></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-phone-line fs-5 text-primary me-3 mt-1"></i>
+                                            <div class="flex-grow-1">
+                                                <small class="text-muted d-block">Phone Number</small>
+                                                <strong><?php echo htmlspecialchars($_SESSION['user_phone']); ?></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-map-pin-line fs-5 text-primary me-3 mt-1"></i>
+                                            <div class="flex-grow-1">
+                                                <small class="text-muted d-block">Address</small>
+                                                <strong><?php echo htmlspecialchars($_SESSION['user_address']); ?></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-graduation-cap-line fs-5 text-primary me-3 mt-1"></i>
+                                            <div class="flex-grow-1">
+                                                <small class="text-muted d-block">Qualification</small>
+                                                <strong><?php echo htmlspecialchars($_SESSION['user_qualification']); ?></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-primary" onclick="window.location.href='#'">
+                                <i class="ri-bookmark-line me-2"></i>My Bookings
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='#'">
+                                <i class="ri-settings-3-line me-2"></i>Account Settings
+                            </button>
+                        </div>
+
+                    <?php endif; ?>
+                </div>
+
+                <div class="modal-footer border-0 bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="ri-close-line me-2"></i>Close
+                    </button>
+                    <a href="logout.php" class="btn btn-danger">
+                        <i class="ri-logout-box-line me-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -264,7 +385,7 @@
         function togglePassword(fieldId, iconId) {
             const passwordField = document.getElementById(fieldId);
             const toggleIcon = document.getElementById(iconId);
-            
+
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
                 toggleIcon.classList.remove('ri-eye-line');
@@ -279,7 +400,7 @@
         // Mobile menu toggle
         const menuBtn = document.getElementById('menu-btn');
         const navLinks = document.getElementById('nav-links');
-        
+
         menuBtn.addEventListener('click', () => {
             navLinks.classList.toggle('open');
         });
@@ -289,4 +410,5 @@
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="main.js"></script>
 </body>
+
 </html>

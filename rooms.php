@@ -2,21 +2,14 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SM - Rooms</title>
-    <script>
-        const priceRange = document.getElementById('priceRange');
-        const priceValue = document.getElementById('priceValue');
-        if (priceRange && priceValue) {
-            priceRange.addEventListener('input', () => {
-                priceValue.textContent = '₹' + priceRange.value;
-            });
-        }
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap");
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <title>SM - Rooms</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap");
 
         :root {
             --primary-color: #0f1a2c;
@@ -44,17 +37,15 @@
             display: block;
         }
 
-        /* LAYOUT: FILTERS LEFT, ROOMS RIGHT */
         .rooms-layout {
             max-width: var(--max-width);
             margin: 2rem auto;
             display: grid;
             grid-template-columns: 260px 1fr;
-            gap: 2rem;
+            gap: 3rem;
             padding-inline: 1rem;
         }
 
-        /* FILTER SIDEBAR */
         .filters {
             background: var(--white);
             border-radius: 8px;
@@ -121,7 +112,6 @@
             border: 1px solid #e2e8f0;
         }
 
-        /* ROOMS SECTION (RIGHT) */
         .room__container {
             padding-block: 0;
             padding-inline: 0;
@@ -134,32 +124,32 @@
 
         .section__subheader {
             margin-bottom: 0.5rem;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 500;
             color: var(--text-light);
             text-transform: uppercase;
             letter-spacing: 2px;
+            text-align: center;
         }
 
         .section__header {
-            font-size: 2.2rem;
+            font-size: 3rem;
             font-weight: 800;
             font-family: var(--header-font);
             color: var(--text-dark);
-            margin-bottom: 1rem;
+            text-align: center;
         }
 
-        /* ROOMS LIST – ONE BELOW ANOTHER */
+
         .room__grid {
             max-width: 100%;
             margin-inline: 0;
             margin-top: 2rem;
             display: grid;
-            gap: 1.5rem;
+            gap: 1rem;
             grid-template-columns: 1fr;
         }
 
-        /* ROOM CARD: IMAGE LEFT, DETAILS RIGHT */
         .room__card {
             display: flex;
             align-items: stretch;
@@ -171,21 +161,15 @@
             overflow: hidden;
         }
 
-        /* Image: fixed width, full vertical fit inside card */
         .room__card img {
             width: 180px;
-            /* horizontal size */
             height: 100%;
-            /* stretch vertically inside card */
             max-height: 220px;
-            /* control max vertical height */
             object-fit: cover;
-            /* fill & crop nicely */
             border-radius: 8px;
             flex-shrink: 0;
         }
 
-        /* Details on the right */
         .room__card__details {
             flex: 1;
             margin-inline: 0;
@@ -229,7 +213,19 @@
             color: var(--text-light);
         }
 
-        /* RESPONSIVE: STACK FILTERS ABOVE ROOMS ON SMALL SCREENS */
+        /* UPDATED: Smaller card images */
+        .card-img-top {
+    height: 280px !important;
+    object-fit: cover;
+    object-position: center bottom; /* Try: center bottom, center top, 50% 30%, etc. */
+}
+
+
+        /* NEW: Add spacing after cards section */
+        .room__grid {
+            margin-bottom: 3rem; /* Adds space after the three cards */
+        }
+
         @media (max-width: 768px) {
             .rooms-layout {
                 grid-template-columns: 1fr;
@@ -248,6 +244,10 @@
             .room__card__details h3 {
                 align-self: flex-start;
             }
+            
+            .card-img-top {
+                height: 220px !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -255,90 +255,136 @@
                 font-size: 2rem;
             }
         }
-        </style>
+
+        .filter-dropdown {
+            min-width: 220px;
+        }
+
+        .wide-navbar-container {
+            max-width: 1800px !important;
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
+        }
+
+        @media (max-width: 1600px) {
+            .wide-navbar-container {
+                padding-left: 4rem;
+                padding-right: 4rem;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .wide-navbar-container {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
- <!-- RIGHT: ROOMS -->
-        <section class="room__container" id="room">
-            <p class="section__subheader">ROOMS</p>
-            <h2 class="section__header">Hand Picked Rooms</h2>
-            <div class="room__grid">
-                <div class="room__card">
-                    <img src="assets/room-1.jpg" alt="Deluxe Suite room" />
-                    <div class="room__card__details">
-                        <div>
-                            <h4>Deluxe Suite</h4>
-                            <p>Well-appointed rooms designed for guests who desire a more.</p><br>
-                            <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p><br>
-
-                            <!-- Food type -->
-                            <p><strong>Food:</strong> Veg & Non-veg</p><br>
-
-                            <!-- Rating (simple stars) -->
-                            <p><strong>Rating:</strong> ★★★★☆ (4.2/5)</p><br>
+    <section class="room__container" id="room">
+    <p class="section__subheader">Rooms</p>
+        <h2 class="section__header">Hand Picked Rooms</h2>
+        <div class="room__grid">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="assets/room-13.jpg" class="card-img-top" alt="S-Hostels Room">
+                        <div class="card-body">
+                            <h5 class="card-title">S-Hostels</h5>
+                            <div class="room__card__details">
+                                <div>
+                                    <p>A comfortable single room located in Hyderabad, suitable for students and working professionals.</p>
+                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
+                                    <p><strong>Food:</strong> Veg & Non-veg</p>
+                                    <p><strong>Rating:</strong></p>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star text-warning"></i>
+                                        <i class="bi bi-star text-warning"></i>
+                                        <span class="ms-2 small text-muted">(3.2/5)</span>
+                                    </div>
+                                </div>
+                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
+                            </div>
                         </div>
-                        <h3>$399<span>/night</span></h3>
-                    </div>
-                </div>
-                <div class="room__card">
-                    <img src="assets/room-2.jpg" alt="Family Suite room" />
-                    <div class="room__card__details">
-                        <div>
-                            <h4>Family Suite</h4>
-                            <p>Consists of multiple rooms and a common living area.</p><br>
-                            <p><strong>Amenities:</strong> Wi‑Fi, AC, Geyser, Washing Machine, Study Table, Locker</p><br>
-
-                            <!-- Food type -->
-                            <p><strong>Food:</strong> Veg & Non‑veg</p><br>
-
-                            <!-- Rating (simple stars) -->
-                            <p><strong>Rating:</strong> ★★★★☆ (4.2/5)</p><br>
+                        <div class="card-footer bg-transparent border-0 py-2">
+                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
                         </div>
-                        <h3>$599<span>/night</span></h3>
-                    </div>
-                </div>
-                <div class="room__card">
-                    <img src="assets/room-3.jpg" alt="Luxury Penthouse room" />
-                    <div class="room__card__details">
-                        <div>
-                            <h4>Luxury Penthouse</h4>
-                            <p>Top-tier accommodations usually on the highest floors of a hotel.</p><br>
-                            <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p><br>
-
-                            <!-- Food type -->
-                            <p><strong>Food:</strong> Veg & Non-veg</p><br>
-
-                            <!-- Rating (simple stars) -->
-                            <p><strong>Rating:</strong> ★★★★☆ (4.2/5)</p><br>
-                        </div>
-                        <h3>$799<span>/night</span></h3>
-                    </div>
-                </div>
-                <div class="room__card">
-                    <img src="assets/room-4.jpg" alt="Luxury Penthouse room" />
-                    <div class="room__card__details">
-                        <div>
-                            <h4>Luxury Penthouse</h4>
-                            <p>Top-tier accommodations usually on the highest floors of a hotel.</p><br>
-                            <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                            <!-- Food type -->
-                            <p><strong>Food:</strong> Veg & Non-veg</p><br>
-
-                            <!-- Rating (simple stars) -->
-                            <p><strong>Rating:</strong> ★★★★☆ (4.2/5)</p><br>
-                        </div>
-                        <h3>$799<span>/night</span></h3>
                     </div>
                 </div>
 
-                
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="assets/room-4.jpg" class="card-img-top" alt="StayHub Room">
+                        <div class="card-body">
+                            <h5 class="card-title">StayHub</h5>
+                            <div class="room__card__details">
+                                <div>
+                                    <p>A clean and airy double-sharing accommodation in Delhi, suitable for students and IT employees.</p>
+                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
+                                    <p><strong>Food:</strong> Veg & Non-veg</p>
+                                    <p><strong>Rating:</strong></p>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star text-warning"></i>
+                                        <i class="bi bi-star text-warning"></i>
+                                        <span class="ms-2 small text-muted">(3.2/5)</span>
+                                    </div>
+                                </div>
+                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 py-2">
+                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="assets/room-9.jpg" class="card-img-top" alt="Grace Girls Hostel Room">
+                        <div class="card-body">
+                            <h5 class="card-title">Grace Girls Hostel</h5>
+                            <div class="room__card__details">
+                                <div>
+                                    <p>A well-ventilated triple-sharing room located in Mumbai, ideal for a social and affordable stay.</p>
+                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
+                                    <p><strong>Food:</strong> Veg & Non-veg</p>
+                                    <p><strong>Rating:</strong></p>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star text-warning"></i>
+                                        <i class="bi bi-star text-warning"></i>
+                                        <span class="ms-2 small text-muted">(3.2/5)</span>
+                                    </div>
+                                </div>
+                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 py-2">
+                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </section>
-    </div>
-    </div>
+        </div>
+    </section>
+
+    <!-- More Options Button with proper spacing -->
+    <div class="d-flex justify-content-center mb-5">
+    <button class="btn btn-primary px-5 py-2" type="button" onclick="window.location.href='rooms1.php'">More Options</button>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

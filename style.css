@@ -241,6 +241,7 @@ nav {
     letter-spacing: 0.4px;
     cursor: pointer;
     transition: background 0.18s, box-shadow 0.17s;
+    
 }
 
 .login-btn:hover {
@@ -258,3 +259,4 @@ nav {
     flex-direction: column;
     align-items: center;
 }
+

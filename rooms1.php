@@ -291,7 +291,7 @@
         Discover Your Perfect Hostel with Smart Filters
     </p>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-color-white">
         <div class="container-xxl px-5" style=" margin-top: 1rem; margin-bottom: 1rem;">
             <a class="navbar-brand" href="#">Rooms</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavFilters">
@@ -437,12 +437,14 @@
                     <!-- Action Buttons -->
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0" align-items="right">
                         <li class="nav-item">
-                            <button class="btn btn-outline-secondary btn-sm me-2">Reset</button>
-                        </li>
+                            <button class="btn btn-primary btn-sm me-md-2">Reset</button>
+                        </li> 
                         <li class="nav-item">
                             <button class="btn btn-primary btn-sm">Apply Filters</button>
                         </li>
                     </ul>
+
+                    
 
                 </ul>
             </div>
@@ -458,10 +460,10 @@
                     <div class="card h-100">
                         <img src="assets/room-1.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">S-Hostels</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A comfortable single room located in Hyderabad, suitable for students and working professionals.</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -477,7 +479,7 @@
                                         <i class="bi bi-star text-warning"></i>
                                         <span class="ms-2 small text-muted">(3.2/5)</span>
                                     </div>
-                                </p>
+                                    </p>
                                 </div>
                                 <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
 
@@ -485,7 +487,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
 
@@ -495,10 +497,10 @@
                     <div class="card h-100">
                         <img src="assets/room-4.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">StayHub</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A clean and airy double-sharing accommodation in Delhi, suitable for students and IT employees.</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -520,19 +522,19 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
                     </div>
                 </div>
                 <div class="col">
                     <div class="card h-100">
-                        <img src="assets/room-7.jpg" class="card-img-top" alt="...">
+                        <img src="assets/room-9.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">Grace Girls Hostel</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A well-ventilated triple-sharing room located in Mumbai, ideal for a social and affordable stay.</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -554,7 +556,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
                     </div>
@@ -563,10 +565,10 @@
                     <div class="card h-100">
                         <img src="assets/room-10.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">Metro Boys Hostel</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A spacious common-sharing hostel located in Jaipur, offering a lively and friendly living space.</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -588,7 +590,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
                     </div>
@@ -597,10 +599,10 @@
                     <div class="card h-100">
                         <img src="assets/room-2.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">Urban Co-Living</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A comfortable single room in Pune, offering privacy and a calm living environment</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -622,7 +624,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
                     </div>
@@ -631,10 +633,10 @@
                     <div class="card h-100">
                         <img src="assets/room-5.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">Serene Stay Girls Hostel</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A spacious double-sharing room located in Hyderabad, designed for comfort and convenience.</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -656,7 +658,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
 
@@ -666,10 +668,10 @@
                     <div class="card h-100">
                         <img src="assets/room-8.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">LiveEasy Co-Living</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A comfortable triple-sharing accommodation in Kochi, perfect for students seeking community living.</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -691,7 +693,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
 
@@ -701,10 +703,10 @@
                     <div class="card h-100">
                         <img src="assets/room-11.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">MyCoStay</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A well-organized common-sharing accommodation in Noida, ideal for students and young professionals.</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -726,7 +728,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
 
@@ -736,10 +738,10 @@
                     <div class="card h-100">
                         <img src="assets/room-3.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">Abode Hostel</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A well-maintained single-sharing accommodation situated in Chennai, ideal for focused living.</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -761,7 +763,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
 
@@ -771,10 +773,10 @@
                     <div class="card h-100">
                         <img src="assets/room-6.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">Zivo</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A budget-friendly double-sharing room in Coimbatore, offering a friendly and homely stay.</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -796,7 +798,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
 
@@ -804,12 +806,12 @@
                 </div>
                 <div class="col">
                     <div class="card h-100">
-                        <img src="assets/room-9.jpg" class="card-img-top" alt="...">
+                        <img src="assets/room-7.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">Arcade Hostels</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A neatly maintained triple-sharing room in Indore, combining comfort with affordability.</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -831,7 +833,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
 
@@ -841,10 +843,10 @@
                     <div class="card h-100">
                         <img src="assets/room-12.jpg" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Deluxe suite</h5>
+                            <h5 class="card-title">Livin</h5>
                             <div class="room__card__details">
                                 <div>
-                                    <p>Well-appointed rooms designed for guests who desire a more.</p>
+                                    <p>A clean and comfortable common-sharing room situated in Vijayawada, promoting a community-driven stay.</p>
                                     <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
 
                                     <!-- Food type -->
@@ -868,7 +870,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
+                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
                         </div>
 
 

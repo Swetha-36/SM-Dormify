@@ -30,17 +30,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
 
-            // Verify password - FIXED: use $user_password instead of $password
+            // Verify password
             if (password_verify($user_password, $user['password'])) {
-                // Login successful
+                // ✅ Login successful - Store ALL user data in session
                 $_SESSION['user_id'] = $user['reg_id'];
                 $_SESSION['user_name'] = $user['name'];
+                $_SESSION['user_email'] = $user['email'];
+                $_SESSION['user_phone'] = $user['phoneno'];
+                $_SESSION['user_address'] = $user['address'];
+                $_SESSION['user_qualification'] = $user['quali'];
+                $_SESSION['logged_in'] = true;
 
                 $alert = "
                 <script>
                     Swal.fire({
                         icon: 'success',
-                        title: 'Success!',
+                        title: 'Welcome Back!',
                         text: 'Login successful!',
                         showConfirmButton: false,
                         timer: 1500

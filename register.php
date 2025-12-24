@@ -1,4 +1,5 @@
 <?php
+session_start(); // Start session at the very beginning
 
 $host     = "localhost:3306";
 $user     = "root";
@@ -80,6 +81,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         );
 
         if ($stmt->execute()) {
+            // ✅ Get the inserted user's ID
+            $user_id = $stmt->insert_id;
+            
+            // ✅ Store user data in session (auto-login after registration)
+            $_SESSION['user_id'] = $user_id;
+            $_SESSION['user_name'] = $fullname;
+            $_SESSION['user_email'] = $email;
+            $_SESSION['user_phone'] = $phone;
+            $_SESSION['user_address'] = $address;
+            $_SESSION['user_qualification'] = $qualification;
+            $_SESSION['logged_in'] = true;
+            
             $stmt->close();
             $conn->close();
             
@@ -88,9 +101,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 Swal.fire({
                     icon: 'success',
                     title: 'Registration Successful!',
-                    text: 'Your account has been created. Please login.',
-                    confirmButtonText: 'Go to Login',
-                    confirmButtonColor: '#28a745'
+                    text: 'Welcome! You are now logged in.',
+                    confirmButtonText: 'Continue',
+                    confirmButtonColor: '#28a745',
+                    timer: 2000
                 }).then(() => {
                     window.location.href = 'index.php';
                 });
@@ -118,12 +132,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 confirmButtonText: 'Try Again',
                 confirmButtonColor: '#d33'
             }).then(() => {
-                    window.location.href = 'index.php';
-                });
+                window.location.href = 'index.php';
+            });
         </script>";
     }
 }
-
 
 ?>
 <!DOCTYPE html>
