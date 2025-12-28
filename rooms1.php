@@ -458,7 +458,9 @@
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div class="col">
                     <div class="card h-100">
-                        <img src="assets/room-1.jpg" class="card-img-top" alt="...">
+                        <img src="data:image/jpeg;base64,<?php echo base64_encode($row['image_path']); ?>" 
+             class="img-fluid mb-3" 
+             alt="<?php echo htmlspecialchars($row['hostel_name']); ?>">
                         <div class="card-body">
                             <h5 class="card-title">S-Hostels</h5>
                             <div class="room__card__details">
