@@ -1,17 +1,33 @@
-<?php
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SM-Rooms</title>
+</head>
+<body>
+    <?php
 require_once 'check_auth.php';
 require_once 'db.php';
 
 $message = '';
-$hostel = null;
+$action = isset($_GET['action']) ? $_GET['action'] : 'list';
+$hostel_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Get existing hostel
-$result = $conn->query("SELECT * FROM hostel LIMIT 1");
-if ($result->num_rows > 0) {
-    $hostel = $result->fetch_assoc();
+// Handle Delete Action
+if ($action == 'delete' && $hostel_id > 0) {
+    $stmt = $conn->prepare("DELETE FROM hostel WHERE id = ?");
+    $stmt->bind_param("i", $hostel_id);
+    if ($stmt->execute()) {
+        $message = 'Hostel deleted successfully!';
+    } else {
+        $message = 'Error deleting hostel';
+    }
+    $stmt->close();
+    $action = 'list';
 }
 
-// Handle form submission
+// Handle Form Submission (Add/Edit)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $hostel_name = trim($_POST['hostel_name']);
     $location = trim($_POST['location']);
@@ -20,7 +36,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $price = (float)$_POST['price'];
     $description = trim($_POST['description']);
     $amenities = trim($_POST['amenities']);
-    $image_path = $hostel ? $hostel['image_path'] : '';
+    $edit_id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+    
+    // Get existing image path if editing
+    $image_path = '';
+    if ($edit_id > 0) {
+        $result = $conn->query("SELECT image_path FROM hostel WHERE id = $edit_id");
+        if ($row = $result->fetch_assoc()) {
+            $image_path = $row['image_path'];
+        }
+    }
     
     // Handle image upload
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
@@ -32,10 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         move_uploaded_file($_FILES['image']['tmp_name'], $image_path);
     }
     
-    if ($hostel) {
+    if ($edit_id > 0) {
         // Update existing hostel
         $stmt = $conn->prepare("UPDATE hostel SET hostel_name=?, location=?, hostel_type=?, food=?, price=?, description=?, amenities=?, image_path=? WHERE id=?");
-        $stmt->bind_param("ssssdsssi", $hostel_name, $location, $hostel_type, $food, $price, $description, $amenities, $image_path, $hostel['id']);
+        $stmt->bind_param("ssssdsssi", $hostel_name, $location, $hostel_type, $food, $price, $description, $amenities, $image_path, $edit_id);
     } else {
         // Insert new hostel
         $stmt = $conn->prepare("INSERT INTO hostel (hostel_name, location, hostel_type, food, price, description, amenities, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -43,23 +68,80 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     if ($stmt->execute()) {
-        $message = 'Hostel details saved successfully!';
-        // Refresh hostel data
-        $result = $conn->query("SELECT * FROM hostel LIMIT 1");
-        $hostel = $result->fetch_assoc();
+        $message = $edit_id > 0 ? 'Hostel updated successfully!' : 'Hostel added successfully!';
+        $action = 'list';
     } else {
         $message = 'Error saving hostel details';
     }
     $stmt->close();
 }
+
+// Fetch hostel for editing
+$hostel = null;
+if ($action == 'edit' && $hostel_id > 0) {
+    $result = $conn->query("SELECT * FROM hostel WHERE id = $hostel_id");
+    if ($result->num_rows > 0) {
+        $hostel = $result->fetch_assoc();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hostel Details - Admin</title>
+    <title>Hostel Management - Admin</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        select {
+        .hostel-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .hostel-table th, .hostel-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .hostel-table th {
+            background-color: #3498db;
+            color: white;
+        }
+        .hostel-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .action-buttons a {
+            padding: 5px 10px;
+            margin: 0 5px;
+            text-decoration: none;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        .btn-edit {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-add {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .btn-back {
+            background-color: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        select, input[type="number"] {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
@@ -69,22 +151,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             cursor: pointer;
             transition: border-color 0.3s;
         }
-        
-        select:focus {
+        select:focus, input[type="number"]:focus {
             outline: none;
             border-color: #3498db;
         }
-        
-        select option {
-            padding: 10px;
-        }
-        
-        input[type="number"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
+        .hostel-image {
+            max-width: 100px;
+            height: auto;
             border-radius: 5px;
-            font-size: 14px;
         }
     </style>
 </head>
@@ -92,74 +166,134 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php include 'header.php'; ?>
     
     <div class="container">
-        <h1>Hostel Details</h1>
+        <h1>Hostel Management</h1>
         
         <?php if ($message): ?>
             <div class="message"><?php echo htmlspecialchars($message); ?></div>
         <?php endif; ?>
         
-        <form method="POST" enctype="multipart/form-data" class="form-container">
-            <div class="form-group">
-                <label>Hostel Name *</label>
-                <input type="text" name="hostel_name" value="<?php echo $hostel ? htmlspecialchars($hostel['hostel_name']) : ''; ?>" required>
-            </div>
+        <?php if ($action == 'list'): ?>
+            <!-- List View -->
+            <a href="?action=add" class="btn-add">+ Add New Hostel</a>
             
-            <div class="form-group">
-                <label>Location *</label>
-                <input type="text" name="location" value="<?php echo $hostel ? htmlspecialchars($hostel['location']) : ''; ?>" required>
-            </div>
+            <table class="hostel-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Hostel Name</th>
+                        <th>Location</th>
+                        <th>Type</th>
+                        <th>Food</th>
+                        <th>Price (₹)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $result = $conn->query("SELECT * FROM hostel ORDER BY id DESC");
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . $row['id'] . "</td>";
+                            echo "<td>";
+                            if (!empty($row['image_path']) && file_exists($row['image_path'])) {
+                                echo "<img src='" . htmlspecialchars($row['image_path']) . "' class='hostel-image' alt='Hostel'>";
+                            } else {
+                                echo "No Image";
+                            }
+                            echo "</td>";
+                            echo "<td>" . htmlspecialchars($row['hostel_name']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['location']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['hostel_type']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['food']) . "</td>";
+                            echo "<td>₹" . number_format($row['price'], 2) . "</td>";
+                            echo "<td class='action-buttons'>";
+                            echo "<a href='?action=edit&id=" . $row['id'] . "' class='btn-edit'>Edit</a>";
+                            echo "<a href='?action=delete&id=" . $row['id'] . "' class='btn-delete' onclick=\"return confirm('Are you sure you want to delete this hostel?')\">Delete</a>";
+                            echo "</td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='8' style='text-align:center;'>No hostels found. Add your first hostel!</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
             
-            <div class="form-row">
+        <?php elseif ($action == 'add' || $action == 'edit'): ?>
+            <!-- Add/Edit Form -->
+            <a href="?action=list" class="btn-back">← Back to List</a>
+            
+            <form method="POST" enctype="multipart/form-data" class="form-container">
+                <?php if ($hostel): ?>
+                    <input type="hidden" name="id" value="<?php echo $hostel['id']; ?>">
+                <?php endif; ?>
+                
                 <div class="form-group">
-                    <label>Hostel Type *</label>
-                    <select name="hostel_type" required>
-                        <option value="">-- Select Type --</option>
-                        <option value="Boys" <?php echo ($hostel && $hostel['hostel_type']=='Boys')?'selected':''; ?>>Boys</option>
-                        <option value="Girls" <?php echo ($hostel && $hostel['hostel_type']=='Girls')?'selected':''; ?>>Girls</option>
-                        <option value="Co-living" <?php echo ($hostel && $hostel['hostel_type']=='Co-living')?'selected':''; ?>>Co-living</option>
-                    </select>
+                    <label>Hostel Name *</label>
+                    <input type="text" name="hostel_name" value="<?php echo $hostel ? htmlspecialchars($hostel['hostel_name']) : ''; ?>" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Food Options *</label>
-                    <select name="food" required>
-                        <option value="">-- Select Food Type --</option>
-                        <option value="Veg" <?php echo ($hostel && $hostel['food']=='Veg')?'selected':''; ?>>Veg</option>
-                        <option value="Non-Veg" <?php echo ($hostel && $hostel['food']=='Non-Veg')?'selected':''; ?>>Non-Veg</option>
-                        <option value="Veg and Non-Veg" <?php echo ($hostel && $hostel['food']=='Veg and Non-Veg')?'selected':''; ?>>Veg and Non-Veg</option>
-                    </select>
+                    <label>Location *</label>
+                    <input type="text" name="location" value="<?php echo $hostel ? htmlspecialchars($hostel['location']) : ''; ?>" required>
                 </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Price Per Bed (₹) *</label>
-                <input type="number" name="price" step="0.01" min="0" value="<?php echo $hostel ? htmlspecialchars($hostel['price']) : ''; ?>" placeholder="5000" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Description</label>
-                <textarea name="description" rows="4"><?php echo $hostel ? htmlspecialchars($hostel['description']) : ''; ?></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label>Amenities (comma-separated)</label>
-                <input type="text" name="amenities" value="<?php echo $hostel ? htmlspecialchars($hostel['amenities']) : ''; ?>" placeholder="WiFi, Parking, Laundry, AC">
-            </div>
-            
-            <div class="form-group">
-                <label>Hostel Image</label>
-                <input type="file" name="image" accept="image/*">
-                <?php if ($hostel && $hostel['image_path']): ?>
-                    <p style="color: #666; font-size: 14px; margin-top: 5px;">
-                        Current: <?php echo basename($hostel['image_path']); ?>
-                    </p>
-                    <img src="<?php echo $hostel['image_path']; ?>" alt="Hostel" style="max-width: 200px; margin-top: 10px; border-radius: 5px;">
-                <?php endif; ?>
-            </div>
-            
-            <button type="submit" class="btn"><?php echo $hostel ? 'Update' : 'Add'; ?> Hostel</button>
-        </form>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hostel Type *</label>
+                        <select name="hostel_type" required>
+                            <option value="">-- Select Type --</option>
+                            <option value="Boys" <?php echo ($hostel && $hostel['hostel_type']=='Boys')?'selected':''; ?>>Boys</option>
+                            <option value="Girls" <?php echo ($hostel && $hostel['hostel_type']=='Girls')?'selected':''; ?>>Girls</option>
+                            <option value="Co-living" <?php echo ($hostel && $hostel['hostel_type']=='Co-living')?'selected':''; ?>>Co-living</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Food Options *</label>
+                        <select name="food" required>
+                            <option value="">-- Select Food Type --</option>
+                            <option value="Veg" <?php echo ($hostel && $hostel['food']=='Veg')?'selected':''; ?>>Veg</option>
+                            <option value="Non-Veg" <?php echo ($hostel && $hostel['food']=='Non-Veg')?'selected':''; ?>>Non-Veg</option>
+                            <option value="Veg and Non-Veg" <?php echo ($hostel && $hostel['food']=='Veg and Non-Veg')?'selected':''; ?>>Veg and Non-Veg</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Price Per Bed (₹) *</label>
+                    <input type="number" name="price" step="0.01" min="0" value="<?php echo $hostel ? htmlspecialchars($hostel['price']) : ''; ?>" placeholder="5000" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" rows="4"><?php echo $hostel ? htmlspecialchars($hostel['description']) : ''; ?></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Amenities (comma-separated)</label>
+                    <input type="text" name="amenities" value="<?php echo $hostel ? htmlspecialchars($hostel['amenities']) : ''; ?>" placeholder="WiFi, Parking, Laundry, AC">
+                </div>
+                
+                <div class="form-group">
+                    <label>Hostel Image</label>
+                    <input type="file" name="image" accept="image/*">
+                    <?php if ($hostel && !empty($hostel['image_path'])): ?>
+                        <p style="color: #666; font-size: 14px; margin-top: 5px;">
+                            Current: <?php echo basename($hostel['image_path']); ?>
+                        </p>
+                        <img src="<?php echo htmlspecialchars($hostel['image_path']); ?>" alt="Hostel" style="max-width: 200px; margin-top: 10px; border-radius: 5px;">
+                    <?php endif; ?>
+                </div>
+                
+                <button type="submit" class="btn"><?php echo $hostel ? 'Update' : 'Add'; ?> Hostel</button>
+            </form>
+        <?php endif; ?>
     </div>
-    </div> <!-- Close main-content -->
+</body>
+</html>
+
 </body>
 </html>

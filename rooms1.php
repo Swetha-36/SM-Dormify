@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SM-Rooms</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>SM - Rooms</title>
-    <style>
+
+    
+     <style>
+        
         @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap");
 
         :root {
@@ -96,23 +97,34 @@
         }
 
         .btn {
-            border: none;
-            border-radius: 4px;
-            padding: 0.5rem 0.9rem;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out; /* Smooth color transition */
+}
 
-        .btn-primary {
-            background: var(--secondary-color);
-            color: var(--white);
-        }
+.btn-primary {
+    background: #f6ac0f; /* Yellow shade */
+    color: #ffffff;
+    border: 1px solid #f6ac0f;
+}
 
-        .btn-outline {
-            background: transparent;
-            color: var(--text-dark);
-            border: 1px solid #e2e8f0;
-        }
+.btn-primary:hover {
+    background-color: #2563eb; /* Blue shade on hover */
+    border-color: #2563eb;
+    color: #ffffff;
+    transform: translateY(-2px); /* Optional: slight lift effect */
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); /* Optional: blue shadow */
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-dark);
+    border: 1px solid #e2e8f0;
+}
+
 
         /* ROOMS SECTION (RIGHT) */
         .room__container {
@@ -283,11 +295,10 @@
             object-position: center top;
             /* Focus on room top */
         }
-    </style>
-</head>
-
-<body>
-    <p style="font-size: 2.5rem; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; color: #2c3e50; margin: 2rem 0; line-height: 1.2;">
+     </style>
+        </head>
+     <body>
+<p style="font-size: 2.5rem; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; color: #2c3e50; margin: 2rem 0; line-height: 1.2;">
         Discover Your Perfect Hostel with Smart Filters
     </p>
 
@@ -451,437 +462,97 @@
         </div>
     </nav>
 
-    <section class="room__container" id="room">
-        <p class="section__subheader">ROOMS</p>
-        <h2 class="section__header">Hand Picked Rooms</h2>
-        <div class="room__grid">
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="data:image/jpeg;base64,<?php echo base64_encode($row['image_path']); ?>" 
-             class="img-fluid mb-3" 
-             alt="<?php echo htmlspecialchars($row['hostel_name']); ?>">
-                        <div class="card-body">
-                            <h5 class="card-title">S-Hostels</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A comfortable single room located in Hyderabad, suitable for students and working professionals.</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong> 
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-                                    </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
 
 
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
 
+<?php
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "sm";
 
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$sql = "SELECT hostel_name, description, amenities, food, price, image_path FROM hostel";
+$result = $conn->query($sql);
+
+// Check if query was successful
+if ($result === false) {
+    die("Error in query: " . $conn->error);
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <style>
+        /* Your existing CSS styles here */
+    </style>
+</head>
+<body>
+
+<section class="room__container" id="room">
+    <p class="section__subheader">ROOMS</p>
+    <h2 class="section__header">Hand Picked Rooms</h2>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        
+        <?php
+        if ($result->num_rows > 0) {
+            // Loop through each row and create a card
+            while($row = $result->fetch_assoc()) {
+        ?>
+        
+        <div class="col">
+            <div class="card h-100">
+                <img src="/sm/admin/<?php echo htmlspecialchars($row['image_path']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($row['hostel_name']); ?>">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title"><?php echo htmlspecialchars($row['hostel_name']); ?></h5>
+                    <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
+                    <p class="card-text"><strong>Amenities:</strong> <?php echo htmlspecialchars($row['amenities']); ?></p>
+                    <p class="card-text"><strong>Food:</strong> <?php echo htmlspecialchars($row['food']); ?></p>
+                    
+                    <p class="card-text"><strong>Rating:</strong></p>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star text-warning"></i>
+                        <i class="bi bi-star text-warning"></i>
+                        <span class="ms-2 small text-muted">(3.2/5)</span>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="assets/room-4.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">StayHub</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A clean and airy double-sharing accommodation in Delhi, suitable for students and IT employees.</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong> 
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-                                </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="assets/room-9.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Grace Girls Hostel</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A well-ventilated triple-sharing room located in Mumbai, ideal for a social and affordable stay.</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong> 
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-                                    </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="assets/room-10.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Metro Boys Hostel</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A spacious common-sharing hostel located in Jaipur, offering a lively and friendly living space.</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong> 
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-                                </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="assets/room-2.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Urban Co-Living</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A comfortable single room in Pune, offering privacy and a calm living environment</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong>
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-                                </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="assets/room-5.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Serene Stay Girls Hostel</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A spacious double-sharing room located in Hyderabad, designed for comfort and convenience.</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong>
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-                                    </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
-
-
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="assets/room-8.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">LiveEasy Co-Living</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A comfortable triple-sharing accommodation in Kochi, perfect for students seeking community living.</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong> 
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-                                </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
-
-
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="assets/room-11.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">MyCoStay</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A well-organized common-sharing accommodation in Noida, ideal for students and young professionals.</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong> 
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-                                </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
-
-
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="assets/room-3.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Abode Hostel</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A well-maintained single-sharing accommodation situated in Chennai, ideal for focused living.</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong> 
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-                                </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
-
-
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="assets/room-6.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Zivo</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A budget-friendly double-sharing room in Coimbatore, offering a friendly and homely stay.</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong> 
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-                                </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
-
-
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="assets/room-7.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Arcade Hostels</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A neatly maintained triple-sharing room in Indore, combining comfort with affordability.</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong> 
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-                                </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
-
-
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="assets/room-12.jpg" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">Livin</h5>
-                            <div class="room__card__details">
-                                <div>
-                                    <p>A clean and comfortable common-sharing room situated in Vijayawada, promoting a community-driven stay.</p>
-                                    <p><strong>Amenities:</strong> Wi-Fi, AC, Geyser, Washing Machine, Study Table, Locker</p>
-
-                                    <!-- Food type -->
-                                    <p><strong>Food:</strong> Veg & Non-veg</p>
-
-                                    <!-- Rating (simple stars) -->
-                                    <p><strong>Rating:</strong>
-                                        <!-- 3.2/5 rating (3 full + 2 empty stars) -->
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
-                                    </div>
-
-                                    </p>
-                                </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <a href="payment.php" class="btn btn-primary btn-sm w-100">Book Now</a>
-                        </div>
-
-
+                    
+                    <div class="mt-auto">
+                        <h3 class="price-tag mb-3">
+                            <i class="bi bi-currency-rupee"></i><?php echo number_format($row['price']); ?>/month
+                        </h3>
+                        <a href="payment.php" class="btn btn-primary w-100">Book Now</a>
                     </div>
                 </div>
             </div>
-    </section>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        </div>
+        
+        <?php
+            } // End while loop
+        } else {
+            echo '<div class="col-12"><p class="text-center">No hostels found in the database.</p></div>';
+        }
+        $conn->close();
+        ?>
+        
+    </div>
+</section>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

@@ -1,4 +1,10 @@
 
+        
+
+
+
+
+         
         @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap");
 
         :root {
@@ -238,4 +244,40 @@
                 font-size: 2rem;
             }
         }
+
+        .filter-dropdown {
+            min-width: 220px;
+        }
+
+        .wide-navbar-container {
+            max-width: 1800px !important;
+            /* Super wide */
+            padding-left: 6rem !important;
+            padding-right: 6rem !important;
+        }
+
+        /* Responsive scaling */
+        @media (max-width: 1600px) {
+            .wide-navbar-container {
+                padding-left: 4rem;
+                padding-right: 4rem;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .wide-navbar-container {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+
+        .card-img-top {
+            height: 550px !important;
+            /* Perfect for 3-column layout */
+            object-fit: cover;
+            /* Sharp crop, no stretch */
+            object-position: center top;
+            /* Focus on room top */
+        }
+    
   

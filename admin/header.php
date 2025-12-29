@@ -4,7 +4,7 @@
         <nav>
             <a href="dashboard.php">Dashboard</a>
             <a href="hostels.php">Hostel</a>
-            <a href="rooms.php">Rooms</a>
+            
             <a href="bookings.php">Bookings</a>
             <a href="users.php">Users</a>
             <a href="settings.php">Settings</a>
