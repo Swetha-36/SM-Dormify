@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-    
-     <style>
-        
+
+    <style>
         @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap");
 
         :root {
@@ -97,33 +97,38 @@
         }
 
         .btn {
-    border: none;
-    border-radius: 4px;
-    padding: 0.5rem 0.9rem;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.4s ease-in-out; /* Smooth color transition */
-}
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 0.9rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.4s ease-in-out;
+            /* Smooth color transition */
+        }
 
-.btn-primary {
-    background: #f6ac0f; /* Yellow shade */
-    color: #ffffff;
-    border: 1px solid #f6ac0f;
-}
+        .btn-primary {
+            background: #f6ac0f;
+            /* Yellow shade */
+            color: #ffffff;
+            border: 1px solid #f6ac0f;
+        }
 
-.btn-primary:hover {
-    background-color: #2563eb; /* Blue shade on hover */
-    border-color: #2563eb;
-    color: #ffffff;
-    transform: translateY(-2px); /* Optional: slight lift effect */
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); /* Optional: blue shadow */
-}
+        .btn-primary:hover {
+            background-color: #2563eb;
+            /* Blue shade on hover */
+            border-color: #2563eb;
+            color: #ffffff;
+            transform: translateY(-2px);
+            /* Optional: slight lift effect */
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            /* Optional: blue shadow */
+        }
 
-.btn-outline {
-    background: transparent;
-    color: var(--text-dark);
-    border: 1px solid #e2e8f0;
-}
+        .btn-outline {
+            background: transparent;
+            color: var(--text-dark);
+            border: 1px solid #e2e8f0;
+        }
 
 
         /* ROOMS SECTION (RIGHT) */
@@ -295,10 +300,11 @@
             object-position: center top;
             /* Focus on room top */
         }
-     </style>
-        </head>
-     <body>
-<p style="font-size: 2.5rem; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; color: #2c3e50; margin: 2rem 0; line-height: 1.2;">
+    </style>
+</head>
+
+<body>
+    <p style="font-size: 2.5rem; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; color: #2c3e50; margin: 2rem 0; line-height: 1.2;">
         Discover Your Perfect Hostel with Smart Filters
     </p>
 
@@ -448,14 +454,14 @@
                     <!-- Action Buttons -->
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0" align-items="right">
                         <li class="nav-item">
-                            <button class="btn btn-primary btn-sm me-md-2">Reset</button>
+                            <button class="btn btn-primary btn-sm me-md-2" onclick="resetFilters()">Reset</button>
                         </li> 
                         <li class="nav-item">
-                            <button class="btn btn-primary btn-sm">Apply Filters</button>
+                            <button class="btn btn-primary btn-sm" onclick="applyFilters()">Apply Filters</button>
                         </li>
                     </ul>
 
-                    
+
 
                 </ul>
             </div>
@@ -465,94 +471,180 @@
 
 
 
-<?php
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "sm";
+    <?php
+    // Database connection
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "sm";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 
-$sql = "SELECT hostel_name, description, amenities, food, price, image_path FROM hostel";
-$result = $conn->query($sql);
+    $sql = "SELECT hostel_name, description, amenities, food, price, image_path FROM hostel";
+    $result = $conn->query($sql);
 
-// Check if query was successful
-if ($result === false) {
-    die("Error in query: " . $conn->error);
-}
-?>
+    // Check if query was successful
+    if ($result === false) {
+        die("Error in query: " . $conn->error);
+    }
+    ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <style>
-        /* Your existing CSS styles here */
-    </style>
-</head>
-<body>
 
-<section class="room__container" id="room">
-    <p class="section__subheader">ROOMS</p>
-    <h2 class="section__header">Hand Picked Rooms</h2>
-    
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <section class="room__container" id="room">
+        <p class="section__subheader">ROOMS</p>
+        <h2 class="section__header">Hand Picked Rooms</h2>
         
-        <?php
-        if ($result->num_rows > 0) {
-            // Loop through each row and create a card
-            while($row = $result->fetch_assoc()) {
-        ?>
-        
-        <div class="col">
-            <div class="card h-100">
-                <img src="/sm/admin/<?php echo htmlspecialchars($row['image_path']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($row['hostel_name']); ?>">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title"><?php echo htmlspecialchars($row['hostel_name']); ?></h5>
-                    <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
-                    <p class="card-text"><strong>Amenities:</strong> <?php echo htmlspecialchars($row['amenities']); ?></p>
-                    <p class="card-text"><strong>Food:</strong> <?php echo htmlspecialchars($row['food']); ?></p>
-                    
-                    <p class="card-text"><strong>Rating:</strong></p>
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="bi bi-star-fill text-warning"></i>
-                        <i class="bi bi-star-fill text-warning"></i>
-                        <i class="bi bi-star-fill text-warning"></i>
-                        <i class="bi bi-star text-warning"></i>
-                        <i class="bi bi-star text-warning"></i>
-                        <span class="ms-2 small text-muted">(3.2/5)</span>
+        <!-- Add this ID -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="rooms-container">
+
+            <?php
+            if ($result->num_rows > 0) {
+                // Loop through each row and create a card
+                while ($row = $result->fetch_assoc()) {
+            ?>
+
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="/sm/admin/<?php echo htmlspecialchars($row['image_path']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($row['hostel_name']); ?>">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title"><?php echo htmlspecialchars($row['hostel_name']); ?></h5>
+                                <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
+                                <p class="card-text"><strong>Amenities:</strong> <?php echo htmlspecialchars($row['amenities']); ?></p>
+                                <p class="card-text"><strong>Food:</strong> <?php echo htmlspecialchars($row['food']); ?></p>
+
+                                <p class="card-text"><strong>Rating:</strong></p>
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star text-warning"></i>
+                                    <i class="bi bi-star text-warning"></i>
+                                    <span class="ms-2 small text-muted">(3.2/5)</span>
+                                </div>
+
+                                <div class="mt-auto">
+                                    <h3 class="price-tag mb-3">
+                                        <i class="bi bi-currency-rupee"></i><?php echo number_format($row['price']); ?>/month
+                                    </h3>
+                                    <!-- In your existing rooms display page -->
+                                 <a href="payment.php" class="btn btn-primary">Book Now</a>
+
+
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="mt-auto">
-                        <h3 class="price-tag mb-3">
-                            <i class="bi bi-currency-rupee"></i><?php echo number_format($row['price']); ?>/month
-                        </h3>
-                        <a href="payment.php" class="btn btn-primary w-100">Book Now</a>
-                    </div>
-                </div>
-            </div>
+
+            <?php
+                } // End while loop
+            } else {
+                echo '<div class="col-12"><p class="text-center">No hostels found in the database.</p></div>';
+            }
+            $conn->close();
+            ?>
+
         </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script>
+    // Function to collect all filter values
+    function getFilterValues() {
+        var filters = {};
         
-        <?php
-            } // End while loop
-        } else {
-            echo '<div class="col-12"><p class="text-center">No hostels found in the database.</p></div>';
-        }
-        $conn->close();
-        ?>
+        // 1. Get Room Type (multiple checkboxes)
+        filters.room_type = [];
+        $('input[name="room_type"]:checked').each(function() {
+            filters.room_type.push($(this).next('label').text().trim());
+        });
         
-    </div>
-</section>
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        // 2. Get Price Range (multiple checkboxes)
+        filters.price_range = [];
+        $('input[name="price_range"]:checked').each(function() {
+            filters.price_range.push($(this).attr('id')); // p1, p2, p3, p4
+        });
+        
+        // 3. Get Gender (radio button)
+        filters.gender = $('input[name="gender"]:checked').next('label').text().trim() || '';
+        
+        // 4. Get Rating (radio button)
+        var ratingChecked = $('input[name="rating"]:checked').attr('id');
+        filters.rating = ratingChecked ? ratingChecked.replace('r', '') : '';
+        
+        // 5. Get Occupancy (radio button)
+        filters.occupancy = $('input[name="occupancy_type"]:checked').next('label').text().trim() || '';
+        
+        // 6. Get Furnishing (multiple checkboxes)
+        filters.furnishing = [];
+        $('input[name="furnishing"]:checked').each(function() {
+            filters.furnishing.push($(this).next('label').text().trim());
+        });
+        
+        // 7. Get Food (radio button)
+        filters.food = $('input[name="food"]:checked').next('label').text().trim() || '';
+        
+        // 8. Get Amenities (multiple checkboxes)
+        filters.amenities = [];
+        $('input[name="amenities"]:checked').each(function() {
+            filters.amenities.push($(this).val());
+        });
+        
+        return filters;
+    }
+
+    // Function to apply filters using AJAX
+    function applyFilters() {
+        var filters = getFilterValues();
+        
+        // Show loading state
+        $('#rooms-container').html('<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+        
+        // AJAX request
+        $.ajax({
+            url: 'filter_rooms.php',
+            type: 'POST',
+            data: {
+                room_type: filters.room_type,
+                price_range: filters.price_range,
+                gender: filters.gender,
+                rating: filters.rating,
+                occupancy: filters.occupancy,
+                furnishing: filters.furnishing,
+                food: filters.food,
+                amenities: filters.amenities
+            },
+            success: function(response) {
+                $('#rooms-container').html(response);
+            },
+            error: function() {
+                $('#rooms-container').html('<div class="col-12"><div class="alert alert-danger">Error loading rooms. Please try again.</div></div>');
+            }
+        });
+    }
+
+    // Function to reset all filters
+    function resetFilters() {
+        // Uncheck all checkboxes
+        $('input[type="checkbox"]').prop('checked', false);
+        
+        // Uncheck all radio buttons
+        $('input[type="radio"]').prop('checked', false);
+        
+        // Load all rooms
+        applyFilters();
+    }
+
+    // Load all rooms on page load
+    $(document).ready(function() {
+        applyFilters();
+    });
+    </script>
 </body>
+
 </html>

@@ -311,9 +311,7 @@
                                 <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
                             </div>
                         </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
-                        </div>
+                        
                     </div>
                 </div>
 
@@ -340,9 +338,7 @@
                                 <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
                             </div>
                         </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
-                        </div>
+                       
                     </div>
                 </div>
 
@@ -369,9 +365,7 @@
                                 <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
                             </div>
                         </div>
-                        <div class="card-footer bg-transparent border-0 py-2">
-                            <button class="btn btn-primary btn-sm w-100">Book Now</button>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
