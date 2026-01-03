@@ -400,22 +400,7 @@
                         </ul>
                     </li>
 
-                    <!-- 6. Furnishing Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="furnishing" role="button" data-bs-toggle="dropdown">
-                            Furnishing
-                        </a>
-                        <ul class="dropdown-menu filter-dropdown" aria-labelledby="furnishing">
-                            <li>
-                                <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="furnishing" id="fully"><label class="form-check-label" for="fully">Fully furnished</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="furnishing" id="semi"><label class="form-check-label" for="semi">Semi-furnished</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="furnishing" id="unfurnished"><label class="form-check-label" for="unfurnished">Unfurnished</label></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-
+                   
                     <!-- 7. Food Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="food" role="button" data-bs-toggle="dropdown">
@@ -470,181 +455,170 @@
 
 
 
+<?php
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "sm";
 
-    <?php
-    // Database connection
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "sm";
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+// ADD 'id' to the SELECT query
+$sql = "SELECT id, hostel_name, description, amenities, food, price, image_path FROM hostel";
+$result = $conn->query($sql);
 
-    $sql = "SELECT hostel_name, description, amenities, food, price, image_path FROM hostel";
-    $result = $conn->query($sql);
+if ($result === false) {
+    die("Error in query: " . $conn->error);
+}
 
-    // Check if query was successful
-    if ($result === false) {
-        die("Error in query: " . $conn->error);
-    }
-    ?>
+// Check login status for buttons
+$is_logged_in = isset($_SESSION['reg_id']) && $_SESSION['reg_id'] > 0;
+?>
 
+<section class="room__container" id="room">
+    <p class="section__subheader">ROOMS</p>
+    <h2 class="section__header">Hand Picked Rooms</h2>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="rooms-container">
+        <?php
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+        ?>
+            <div class="col">
+                <div class="card h-100">
+                    <img src="/sm/admin/<?php echo htmlspecialchars($row['image_path']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($row['hostel_name']); ?>">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title"><?php echo htmlspecialchars($row['hostel_name']); ?></h5>
+                        <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
+                        <p class="card-text"><strong>Amenities:</strong> <?php echo htmlspecialchars($row['amenities']); ?></p>
+                        <p class="card-text"><strong>Food:</strong> <?php echo htmlspecialchars($row['food']); ?></p>
 
-    <section class="room__container" id="room">
-        <p class="section__subheader">ROOMS</p>
-        <h2 class="section__header">Hand Picked Rooms</h2>
-        
-        <!-- Add this ID -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="rooms-container">
-
-            <?php
-            if ($result->num_rows > 0) {
-                // Loop through each row and create a card
-                while ($row = $result->fetch_assoc()) {
-            ?>
-
-                    <div class="col">
-                        <div class="card h-100">
-                            <img src="/sm/admin/<?php echo htmlspecialchars($row['image_path']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($row['hostel_name']); ?>">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title"><?php echo htmlspecialchars($row['hostel_name']); ?></h5>
-                                <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
-                                <p class="card-text"><strong>Amenities:</strong> <?php echo htmlspecialchars($row['amenities']); ?></p>
-                                <p class="card-text"><strong>Food:</strong> <?php echo htmlspecialchars($row['food']); ?></p>
-
-                                <p class="card-text"><strong>Rating:</strong></p>
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    <i class="bi bi-star text-warning"></i>
-                                    <span class="ms-2 small text-muted">(3.2/5)</span>
-                                </div>
-
-                                <div class="mt-auto">
-                                    <h3 class="price-tag mb-3">
-                                        <i class="bi bi-currency-rupee"></i><?php echo number_format($row['price']); ?>/month
-                                    </h3>
-                                    <!-- In your existing rooms display page -->
-                                 <a href="payment.php" class="btn btn-primary">Book Now</a>
-
-
-
-                                </div>
-                            </div>
+                        <div class="mt-auto">
+                            <h3 class="price-tag mb-3">
+                                <i class="bi bi-currency-rupee"></i><?php echo number_format($row['price']); ?>/month
+                            </h3>
+                            
+                            <!-- UPDATED BUTTON -->
+                            <button type="button" 
+                                    class="btn btn-primary w-100" 
+                                    onclick="checkLoginAndBook(<?php echo $row['id']; ?>, <?php echo $row['price']; ?>, <?php echo $is_logged_in ? 'true' : 'false'; ?>)">
+                                Book Now
+                            </button>
                         </div>
                     </div>
-
-            <?php
-                } // End while loop
-            } else {
-                echo '<div class="col-12"><p class="text-center">No hostels found in the database.</p></div>';
+                </div>
+            </div>
+        <?php
             }
-            $conn->close();
-            ?>
+        } else {
+            echo '<div class="col-12"><p class="text-center">No hostels found in the database.</p></div>';
+        }
+        ?>
+    </div>
+</section>
 
-        </div>
-    </section>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-    <script>
-    // Function to collect all filter values
-    function getFilterValues() {
-        var filters = {};
-        
-        // 1. Get Room Type (multiple checkboxes)
-        filters.room_type = [];
-        $('input[name="room_type"]:checked').each(function() {
-            filters.room_type.push($(this).next('label').text().trim());
-        });
-        
-        // 2. Get Price Range (multiple checkboxes)
-        filters.price_range = [];
-        $('input[name="price_range"]:checked').each(function() {
-            filters.price_range.push($(this).attr('id')); // p1, p2, p3, p4
-        });
-        
-        // 3. Get Gender (radio button)
-        filters.gender = $('input[name="gender"]:checked').next('label').text().trim() || '';
-        
-        // 4. Get Rating (radio button)
-        var ratingChecked = $('input[name="rating"]:checked').attr('id');
-        filters.rating = ratingChecked ? ratingChecked.replace('r', '') : '';
-        
-        // 5. Get Occupancy (radio button)
-        filters.occupancy = $('input[name="occupancy_type"]:checked').next('label').text().trim() || '';
-        
-        // 6. Get Furnishing (multiple checkboxes)
-        filters.furnishing = [];
-        $('input[name="furnishing"]:checked').each(function() {
-            filters.furnishing.push($(this).next('label').text().trim());
-        });
-        
-        // 7. Get Food (radio button)
-        filters.food = $('input[name="food"]:checked').next('label').text().trim() || '';
-        
-        // 8. Get Amenities (multiple checkboxes)
-        filters.amenities = [];
-        $('input[name="amenities"]:checked').each(function() {
-            filters.amenities.push($(this).val());
-        });
-        
-        return filters;
-    }
-
-    // Function to apply filters using AJAX
-    function applyFilters() {
-        var filters = getFilterValues();
-        
-        // Show loading state
-        $('#rooms-container').html('<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
-        
-        // AJAX request
-        $.ajax({
-            url: 'filter_rooms.php',
-            type: 'POST',
-            data: {
-                room_type: filters.room_type,
-                price_range: filters.price_range,
-                gender: filters.gender,
-                rating: filters.rating,
-                occupancy: filters.occupancy,
-                furnishing: filters.furnishing,
-                food: filters.food,
-                amenities: filters.amenities
-            },
-            success: function(response) {
-                $('#rooms-container').html(response);
-            },
-            error: function() {
-                $('#rooms-container').html('<div class="col-12"><div class="alert alert-danger">Error loading rooms. Please try again.</div></div>');
-            }
-        });
-    }
-
-    // Function to reset all filters
-    function resetFilters() {
-        // Uncheck all checkboxes
-        $('input[type="checkbox"]').prop('checked', false);
-        
-        // Uncheck all radio buttons
-        $('input[type="radio"]').prop('checked', false);
-        
-        // Load all rooms
-        applyFilters();
-    }
-
-    // Load all rooms on page load
-    $(document).ready(function() {
-        applyFilters();
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+<script>
+// Filter functions
+function getFilterValues() {
+    var filters = {};
+    filters.room_type = [];
+    $('input[name="room_type"]:checked').each(function() {
+        filters.room_type.push($(this).next('label').text().trim());
     });
-    </script>
-</body>
+    filters.price_range = [];
+    $('input[name="price_range"]:checked').each(function() {
+        filters.price_range.push($(this).attr('id'));
+    });
+    var ratingChecked = $('input[name="rating"]:checked').attr('id');
+    filters.rating = ratingChecked ? ratingChecked.replace('r', '') : '';
+    filters.occupancy = $('input[name="occupancy_type"]:checked').next('label').text().trim() || '';
+    filters.food = $('input[name="food"]:checked').next('label').text().trim() || '';
+    filters.amenities = [];
+    $('input[name="amenities"]:checked').each(function() {
+        filters.amenities.push($(this).val());
+    });
+    return filters;
+}
 
+function applyFilters() {
+    var filters = getFilterValues();
+    $('#rooms-container').html('<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+    
+    $.ajax({
+        url: 'filter_rooms.php',
+        type: 'POST',
+        data: {
+            room_type: filters.room_type,
+            price_range: filters.price_range,
+            rating: filters.rating,
+            occupancy: filters.occupancy,
+            food: filters.food,
+            amenities: filters.amenities
+        },
+        success: function(response) {
+            $('#rooms-container').html(response);
+        },
+        error: function() {
+            $('#rooms-container').html('<div class="col-12"><div class="alert alert-danger">Error loading rooms. Please try again.</div></div>');
+        }
+    });
+}
+
+function resetFilters() {
+    $('input[type="checkbox"]').prop('checked', false);
+    $('input[type="radio"]').prop('checked', false);
+    applyFilters();
+}
+
+$(document).ready(function() {
+    applyFilters();
+});
+</script>
+
+<!-- SINGLE checkLoginAndBook FUNCTION - ONLY ONE -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function checkLoginAndBook(hostelId, price, isLoggedIn) {
+    if (!isLoggedIn) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Please Login First',
+            text: 'You need to login before booking a hostel',
+            confirmButtonText: 'Go to Login',
+            confirmButtonColor: '#3498db',
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                sessionStorage.setItem('pendingBooking', JSON.stringify({
+                    hostelId: hostelId, 
+                    price: price
+                }));
+                window.location.href = 'index.php?openLogin=true&redirect=rooms1';
+            }
+        });
+    } else {
+        
+        window.location.href = 'payment.php?hostel_id=' + hostelId + '&price=' + price;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const pendingBooking = sessionStorage.getItem('pendingBooking');
+    
+    if (pendingBooking) {
+        const booking = JSON.parse(pendingBooking);
+        sessionStorage.removeItem('pendingBooking');
+        window.location.href = 'payment.php?hostel_id=' + booking.hostelId + '&price=' + booking.price;
+    }
+});
+</script>
+
+</body>
 </html>

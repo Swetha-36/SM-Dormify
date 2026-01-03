@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $location = trim($_POST['location']);
     $hostel_type = $_POST['hostel_type'];
     $food = $_POST['food'];
+    $occupancy_type = $_POST['occupancy_type'];
+    $room_type = $_POST['room_type'];
     $price = (float)$_POST['price'];
     $description = trim($_POST['description']);
     $amenities = trim($_POST['amenities']);
@@ -59,12 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     if ($edit_id > 0) {
         // Update existing hostel
-        $stmt = $conn->prepare("UPDATE hostel SET hostel_name=?, location=?, hostel_type=?, food=?, price=?, description=?, amenities=?, image_path=? WHERE id=?");
-        $stmt->bind_param("ssssdsssi", $hostel_name, $location, $hostel_type, $food, $price, $description, $amenities, $image_path, $edit_id);
+        $stmt = $conn->prepare("UPDATE hostel SET hostel_name=?, location=?, hostel_type=?, food=?, occupancy_type=?, room_type=?, price=?, description=?, amenities=?, image_path=? WHERE id=?");
+        $stmt->bind_param("ssssssdsssi", $hostel_name, $location, $hostel_type, $food, $occupancy_type, $room_type, $price, $description, $amenities, $image_path, $edit_id);
     } else {
         // Insert new hostel
-        $stmt = $conn->prepare("INSERT INTO hostel (hostel_name, location, hostel_type, food, price, description, amenities, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssdsss", $hostel_name, $location, $hostel_type, $food, $price, $description, $amenities, $image_path);
+        $stmt = $conn->prepare("INSERT INTO hostel (hostel_name, location, hostel_type, food, occupancy_type, room_type, price, description, amenities, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssdsss", $hostel_name, $location, $hostel_type, $food, $occupancy_type, $room_type, $price, $description, $amenities, $image_path);
     }
     
     if ($stmt->execute()) {
@@ -185,6 +187,8 @@ if ($action == 'edit' && $hostel_id > 0) {
                         <th>Location</th>
                         <th>Type</th>
                         <th>Food</th>
+                        <th>Occupancy</th>
+                        <th>Room Type</th>
                         <th>Price (₹)</th>
                         <th>Actions</th>
                     </tr>
@@ -207,6 +211,8 @@ if ($action == 'edit' && $hostel_id > 0) {
                             echo "<td>" . htmlspecialchars($row['location']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['hostel_type']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['food']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['occupancy_type']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['room_type']) . "</td>";
                             echo "<td>₹" . number_format($row['price'], 2) . "</td>";
                             echo "<td class='action-buttons'>";
                             echo "<a href='?action=edit&id=" . $row['id'] . "' class='btn-edit'>Edit</a>";
@@ -215,7 +221,7 @@ if ($action == 'edit' && $hostel_id > 0) {
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='8' style='text-align:center;'>No hostels found. Add your first hostel!</td></tr>";
+                        echo "<tr><td colspan='10' style='text-align:center;'>No hostels found. Add your first hostel!</td></tr>";
                     }
                     ?>
                 </tbody>
@@ -262,6 +268,29 @@ if ($action == 'edit' && $hostel_id > 0) {
                     </div>
                 </div>
                 
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Occupancy Type *</label>
+                        <select name="occupancy_type" required>
+                            <option value="">-- Select Occupancy --</option>
+                            <option value="Student" <?php echo ($hostel && $hostel['occupancy_type']=='Student')?'selected':''; ?>>Student</option>
+                            <option value="Working" <?php echo ($hostel && $hostel['occupancy_type']=='Working')?'selected':''; ?>>Working</option>
+                            <option value="Both" <?php echo ($hostel && $hostel['occupancy_type']=='Both')?'selected':''; ?>>Both</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Room Type *</label>
+                        <select name="room_type" required>
+                            <option value="">-- Select Room Type --</option>
+                            <option value="Single" <?php echo ($hostel && $hostel['room_type']=='Single')?'selected':''; ?>>Single</option>
+                            <option value="Double" <?php echo ($hostel && $hostel['room_type']=='Double')?'selected':''; ?>>Double</option>
+                            <option value="Triple" <?php echo ($hostel && $hostel['room_type']=='Triple')?'selected':''; ?>>Triple</option>
+                            <option value="Common Sharing" <?php echo ($hostel && $hostel['room_type']=='Common Sharing')?'selected':''; ?>>Common Sharing</option>
+                        </select>
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label>Price Per Bed (₹) *</label>
                     <input type="number" name="price" step="0.01" min="0" value="<?php echo $hostel ? htmlspecialchars($hostel['price']) : ''; ?>" placeholder="5000" required>
@@ -294,6 +323,5 @@ if ($action == 'edit' && $hostel_id > 0) {
     </div>
 </body>
 </html>
-
 </body>
 </html>

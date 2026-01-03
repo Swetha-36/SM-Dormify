@@ -407,8 +407,39 @@
     </script>
 
     <!-- ScrollReveal -->
-    <script src="https://unpkg.com/scrollreveal"></script>
-    <script src="main.js"></script>
+    <?php
+session_start();
+$is_logged_in = isset($_SESSION['reg_id']) && $_SESSION['reg_id'] > 0;
+?>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const isLoggedIn = <?php echo $is_logged_in ? 'true' : 'false'; ?>;
+
+// Only show login modal if NOT logged in
+if (urlParams.get('openLogin') === 'true' && !isLoggedIn) {
+    var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    loginModal.show();
+    
+    const redirect = urlParams.get('redirect');
+    if (redirect) {
+        const loginForm = document.querySelector('#loginModal form');
+        if (loginForm) {
+            const currentAction = loginForm.action || 'login.php';
+            loginForm.action = currentAction + '?redirect=' + redirect;
+        }
+    }
+}
+
+// Clean up URL
+if (urlParams.has('openLogin') || urlParams.has('redirect')) {
+    const newUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, newUrl);
+}
+</script>
+
+
+
 </body>
 
 </html>

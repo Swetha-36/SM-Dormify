@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Verify password
             if (password_verify($user_password, $user['password'])) {
                 // ✅ Login successful - Store ALL user data in session
+                $_SESSION['reg_id'] = $user['reg_id']; // ADD THIS LINE - Important!
                 $_SESSION['user_id'] = $user['reg_id'];
                 $_SESSION['user_name'] = $user['name'];
                 $_SESSION['user_email'] = $user['email'];
@@ -40,6 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_address'] = $user['address'];
                 $_SESSION['user_qualification'] = $user['quali'];
                 $_SESSION['logged_in'] = true;
+
+                // Check if there's a redirect parameter for booking flow
+                $redirect_url = 'index.php';
+                if (isset($_GET['redirect']) && $_GET['redirect'] == 'rooms1') {
+                    $redirect_url = 'rooms1.php';
+                }
 
                 $alert = "
                 <script>
@@ -50,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
-                        window.location.href = 'index.php';
+                        window.location.href = '$redirect_url';
                     });
                 </script>";
             } else {
@@ -110,9 +117,7 @@ $conn->close();
 </head>
 
 <body>
-
     <?php echo $alert; ?>
-
 </body>
 
 </html>
