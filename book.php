@@ -9,7 +9,6 @@
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap");
 
-        /* Define CSS Variables FIRST */
         :root {
             --primary-color: #0f1a2c;
             --secondary-color: #f6ac0f;
@@ -75,7 +74,6 @@
             color: var(--text-light);
         }
 
-        /* Style for Bootstrap select */
         .input__group select.form-select {
             background-color: rgba(255, 255, 255, 0.1);
             color: var(--white);
@@ -87,7 +85,6 @@
             color: var(--white);
         }
 
-        /* Button styles - INCREASED SPECIFICITY TO OVERRIDE BOOTSTRAP */
         .booking .btn,
         button.btn.search-btn {
             padding: 0.75rem 2rem !important;
@@ -110,7 +107,6 @@
             color: var(--white) !important;
         }
 
-        /* Responsive styles */
         @media (width > 768px) {
             .booking__container form {
                 max-width: 100%;
@@ -123,38 +119,41 @@
 <body>
     <section class="booking">
         <div class="section__container booking__container">
-            <form action="rooms1.php" method="POST">
+            <form action="book_filter.php" method="POST" id="bookingSearchForm">
                 <!-- Room Type -->
-                <div class="input__group">
-                    <label for="roomType" class="form-label fw-semibold">
-                        Room Type
-                    </label>
-                    <select id="roomType" name="roomType" class="form-select shadow-none" required>
-                        <option value="" disabled selected>Select room type</option>
-                        <option value="single">Single Room</option>
-                        <option value="double">Double Sharing</option>
-                        <option value="common">Common Sharing</option>
-                    </select>
-                </div>
+               
+<div class="input__group">
+    <label for="roomType" class="form-label fw-semibold">
+        Room Type
+    </label>
+    <select id="roomType" name="room_type" class="form-select shadow-none">
+        <option value="">All Room Types</option>
+        <option value="Single">Single Room</option>
+        <option value="Double">Double Sharing</option>
+        <option value="Triple">Triple Sharing</option>
+        <option value="Common Sharing">Common Sharing</option>
+    </select>
+</div>
+
 
                 <!-- Price Range -->
                 <div class="input__group">
                     <label for="price" class="form-label fw-semibold">
                         Price Range
                     </label>
-                    <select id="price" name="price" class="form-select shadow-none" required>
-                        <option value="" disabled selected>Select price range</option>
-                        <option value="below5k">Below ₹5,000</option>
-                        <option value="5kto10k">₹5,000 - ₹10,000</option>
-                        <option value="10kto15k">₹10,000 - ₹15,000</option>
-                        <option value="above15k">Above ₹15,000</option>
+                    <select id="price" name="price_range" class="form-select shadow-none">
+                        <option value="">All Prices</option>
+                        <option value="p1">₹3,000 - ₹5,000</option>
+                        <option value="p2">₹5,000 - ₹8,000</option>
+                        <option value="p3">₹8,000 - ₹12,000</option>
+                        <option value="p4">₹12,000 - ₹15,000</option>
                     </select>
                 </div>
 
                 <!-- Location -->
                 <div class="input__group">
                     <label for="location">Location</label>
-                    <input id="location" name="location" type="text" placeholder="Stay location" required />
+                    <input id="location" name="location" type="text" placeholder="Stay location" />
                 </div>
 
                 <!-- Submit Button -->

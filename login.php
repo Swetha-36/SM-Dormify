@@ -44,8 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Check if there's a redirect parameter for booking flow
                 $redirect_url = 'index.php';
-                if (isset($_GET['redirect']) && $_GET['redirect'] == 'rooms1') {
-                    $redirect_url = 'rooms1.php';
+                if (isset($_GET['redirect']) && $_GET['redirect'] == 'hostel1') {
+                    $redirect_url = 'hostel1.php';
                 }
 
                 $alert = "

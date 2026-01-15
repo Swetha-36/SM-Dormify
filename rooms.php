@@ -283,14 +283,14 @@
 </head>
 
 <body>
-    <section class="room__container" id="room">
+    <section class="room__container" id="rooms">
     <p class="section__subheader">Rooms</p>
         <h2 class="section__header">Hand Picked Rooms</h2>
         <div class="room__grid">
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div class="col">
                     <div class="card h-100">
-                        <img src="assets/room-13.jpg" class="card-img-top" alt="S-Hostels Room">
+                        <img src="assets/hostel-1.jpg" class="card-img-top" alt="S-Hostels Room">
                         <div class="card-body">
                             <h5 class="card-title">S-Hostels</h5>
                             <div class="room__card__details">
@@ -317,7 +317,7 @@
 
                 <div class="col">
                     <div class="card h-100">
-                        <img src="assets/room-4.jpg" class="card-img-top" alt="StayHub Room">
+                        <img src="assets/hostel-2.jpg" class="card-img-top" alt="StayHub Room">
                         <div class="card-body">
                             <h5 class="card-title">StayHub</h5>
                             <div class="room__card__details">
@@ -330,12 +330,12 @@
                                         <i class="bi bi-star-fill text-warning"></i>
                                         <i class="bi bi-star-fill text-warning"></i>
                                         <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
                                         <i class="bi bi-star text-warning"></i>
-                                        <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
+                                        <span class="ms-2 small text-muted">(4.0/5)</span>
                                     </div>
                                 </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
+                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1000/month</h3>
                             </div>
                         </div>
                        
@@ -344,7 +344,7 @@
 
                 <div class="col">
                     <div class="card h-100">
-                        <img src="assets/room-9.jpg" class="card-img-top" alt="Grace Girls Hostel Room">
+                        <img src="assets/hostel-3.jpg" class="card-img-top" alt="Grace Girls Hostel Room">
                         <div class="card-body">
                             <h5 class="card-title">Grace Girls Hostel</h5>
                             <div class="room__card__details">
@@ -359,10 +359,10 @@
                                         <i class="bi bi-star-fill text-warning"></i>
                                         <i class="bi bi-star text-warning"></i>
                                         <i class="bi bi-star text-warning"></i>
-                                        <span class="ms-2 small text-muted">(3.2/5)</span>
+                                        <span class="ms-2 small text-muted">(3.5/5)</span>
                                     </div>
                                 </div>
-                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1500/month</h3>
+                                <h3 class="d-inline"><i class="bi bi-currency-rupee"></i>1300/month</h3>
                             </div>
                         </div>
                         
@@ -374,7 +374,7 @@
 
     <!-- More Options Button with proper spacing -->
     <div class="d-flex justify-content-center mb-5">
-    <button class="btn btn-primary px-5 py-2" type="button" onclick="window.location.href='rooms1.php'">More Options</button>
+    <button class="btn btn-primary px-5 py-2" type="button" onclick="window.location.href='hostel1.php'">More Options</button>
 </div>
 
 

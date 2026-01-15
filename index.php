@@ -58,9 +58,9 @@
             <ul class="nav__links" id="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="rooms1.php">Room</a></li>
+                <li><a href="#rooms">Room</a></li>
                 <li><a href="#feature">Feature</a></li>
-                <li><a href="#menu">Menu</a></li>
+                <li><a href= "#menu">Menu</a></li>
                 <li>
 
                     <?php
@@ -152,14 +152,12 @@
                                     class="form-control shadow-none" placeholder="Enter your password" required />
                                 <button class="btn btn-outline-secondary shadow-none" type="button"
                                     onclick="togglePassword('loginPassword', 'toggleLoginIcon')">
-                                    <i class="ri-eye-line" id="toggleLoginIcon"></i>
+                                    
                                 </button>
                             </div>
                         </div>
 
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <a href="javascript: void(0)" class="text-secondary text-decoration-none">Forgot Password?</a>
-                        </div>
+                        
 
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary w-100 shadow-none mb-2">
@@ -192,6 +190,7 @@
                         Create Account
                     </h5>
                     <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+
                 </div>
 
                 <form action="register.php" method="POST" id="registerForm">
@@ -263,7 +262,8 @@
                             <small class="text-muted">
                                 Already have an account?
                                 <a href="#" class="text-primary text-decoration-none"
-                                    data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#loginModal" data-bs-dismiss="modal">
                                     Login here
                                 </a>
                             </small>
@@ -408,7 +408,7 @@
 
     <!-- ScrollReveal -->
     <?php
-session_start();
+
 $is_logged_in = isset($_SESSION['reg_id']) && $_SESSION['reg_id'] > 0;
 ?>
 

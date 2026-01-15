@@ -1,17 +1,75 @@
+<?php
+session_start();
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "sm";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$is_logged_in = isset($_SESSION['reg_id']) && $_SESSION['reg_id'] > 0;
+
+// Get hostel_id from URL
+$hostel_id = isset($_GET['hostel_id']) ? (int)$_GET['hostel_id'] : 0;
+$hostel_name = 'Unknown Hostel'; // ✅ DEFAULT VALUE
+$rooms_result = false; // ✅ DEFAULT VALUE
+
+// Fetch hostel details FIRST
+if ($hostel_id > 0) {
+    $stmt = $conn->prepare("SELECT hostel_name FROM hostel WHERE id = ?");
+    $stmt->bind_param("i", $hostel_id);
+    $stmt->execute();
+    $hostel_result = $stmt->get_result();
+    if ($hostel_row = $hostel_result->fetch_assoc()) {
+        $hostel_name = $hostel_row['hostel_name'];
+    }
+    $stmt->close();
+}
+
+// Fetch ROOMS for this specific hostel
+// Fetch ROOMS for this specific hostel - FIXED VERSION
+$rooms_result = false;
+if ($hostel_id > 0) {
+    $sql = "SELECT r.id, r.room_number, r.room_type, r.price, r.image_path, r.available_beds, r.capacity, r.description, h.hostel_name 
+            FROM rooms r 
+            LEFT JOIN hostel h ON r.hostel_id = h.id 
+            WHERE r.hostel_id = ? AND r.status = 'Available' 
+            ORDER BY r.room_number";
+
+    $stmt = $conn->prepare($sql);
+    if ($stmt) {
+        $stmt->bind_param("i", $hostel_id);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            if ($result) {
+                $rooms_result = $result;  // Only set if successful
+            }
+        }
+        $stmt->close();
+    }
+}
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SM-Rooms</title>
+    <title>Rooms - <?php echo htmlspecialchars($hostel_name); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
-
+    <!-- Keep ALL your existing CSS styles exactly the same -->
     <style>
+        /* YOUR COMPLETE EXISTING CSS - NO CHANGES */
         @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap");
-
         :root {
             --primary-color: #0f1a2c;
             --secondary-color: #f6ac0f;
@@ -300,325 +358,234 @@
             object-position: center top;
             /* Focus on room top */
         }
+    
+        
+        /* Add this small addition for rooms */
+        .hostel-header {
+            background: linear-gradient(135deg, #0f1a2c 0%, #1e3a5f 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .back-btn {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
     </style>
 </head>
-
 <body>
-    <p style="font-size: 2.5rem; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; color: #2c3e50; margin: 2rem 0; line-height: 1.2;">
-        Discover Your Perfect Hostel with Smart Filters
-    </p>
+    <!-- Hostel Header -->
+    <div class="hostel-header">
+        <a href="javascript:history.back()" class="btn back-btn">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; margin: 0;">
+            Rooms in <strong><?php echo htmlspecialchars($hostel_name); ?></strong>
+        </h1>
+        <p style="font-size: 1.1rem; opacity: 0.9;">Choose your perfect room</p>
+    </div>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-color-white">
-        <div class="container-xxl px-5" style=" margin-top: 1rem; margin-bottom: 1rem;">
-            <a class="navbar-brand" href="#">Rooms</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavFilters">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavFilters">
-                <ul class="navbar-nav me-auto">
+    <section class="room__container" id="room">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="rooms-container">
+            <?php
+    if ($rooms_result !== false && $rooms_result->num_rows > 0) {
+        while ($room = $rooms_result->fetch_assoc()) {
+    ?>
+            <div class="col">
+    <div class="card h-100">
+        <img src="/sm/admin/<?php echo htmlspecialchars($room['image_path'] ?? 'uploads/no-image.jpg'); ?>" 
+             class="card-img-top" 
+             alt="<?php echo htmlspecialchars($room['room_number']); ?>"
+             onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+        
+        <div class="card-body d-flex flex-column">
+            <h5 class="card-title"><?php echo htmlspecialchars($room['room_type']); ?> Room</h5>
+            <p class="card-text"><?php echo htmlspecialchars($room['description']); ?> Room</p>
+            <p class="card-text"><strong>Capacity:</strong> <?php echo $room['capacity']; ?> beds</p>
+            <p class="card-text"><strong>Available:</strong> <?php echo $room['available_beds']; ?>/<?php echo $room['capacity']; ?></p>
 
-                    <!-- 1. Room Type Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="roomType" role="button" data-bs-toggle="dropdown">
-                            Room Type
-                        </a>
-                        <ul class="dropdown-menu filter-dropdown" aria-labelledby="roomType">
-                            <li>
-                                <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="room_type" id="single"><label class="form-check-label" for="single">Single</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="room_type" id="double"><label class="form-check-label" for="double">Double</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="room_type" id="triple"><label class="form-check-label" for="triple">Triple</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="room_type" id="sharing"><label class="form-check-label" for="sharing">Common Sharing</label></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
+            <div class="mt-auto">
+                <h3 class="price-tag mb-3">
+                    <i class="bi bi-currency-rupee"></i><?php echo number_format($room['price']); ?>/bed/month
+                </h3>
+                
+                <!-- UPDATED BUTTON - SAME FORMAT -->
+                <button type="button"
+        class="btn btn-primary w-100"
+        onclick="bookRoom(<?php echo $room['id']; ?>, '<?php echo addslashes($room['room_number']); ?>', <?php echo $room['price']; ?>, '<?php echo addslashes($hostel_name); ?>')">
+    Book Room
+</button>
 
-                    <!-- 2. Price Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="price" role="button" data-bs-toggle="dropdown">
-                            Price
-                        </a>
-                        <ul class="dropdown-menu filter-dropdown" aria-labelledby="price">
-                            <li>
-                                <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p1"><label class="form-check-label" for="p1">₹3,000–₹5,000</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p2"><label class="form-check-label" for="p2">₹5,000–₹8,000</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p3"><label class="form-check-label" for="p3">₹8,000–₹12,000</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p4"><label class="form-check-label" for="p4">₹12,000–₹15,000</label></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
+                
 
-                    <!-- 3. Gender Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="gender" role="button" data-bs-toggle="dropdown">
-                            Gender
-                        </a>
-                        <ul class="dropdown-menu filter-dropdown" aria-labelledby="gender">
-                            <li>
-                                <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="gender" id="male"><label class="form-check-label" for="male">Male</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="gender" id="female"><label class="form-check-label" for="female">Female</label></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- 4. Rating Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="rating" role="button" data-bs-toggle="dropdown">
-                            Rating
-                        </a>
-                        <ul class="dropdown-menu filter-dropdown" aria-labelledby="rating">
-                            <li>
-                                <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r1"><label class="form-check-label" for="r1">1+ stars</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r2"><label class="form-check-label" for="r2">2+ stars</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r3"><label class="form-check-label" for="r3">3+ stars</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r4"><label class="form-check-label" for="r4">4+ stars</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r5"><label class="form-check-label" for="r5">5 stars only</label></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- 5. Occupancy Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="occupancy" role="button" data-bs-toggle="dropdown">
-                            Occupancy
-                        </a>
-                        <ul class="dropdown-menu filter-dropdown" aria-labelledby="occupancy">
-                            <li>
-                                <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="occupancy_type" id="student"><label class="form-check-label" for="student">Student</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="occupancy_type" id="working"><label class="form-check-label" for="working">Working</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="occupancy_type" id="both"><label class="form-check-label" for="both">Both</label></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-
-                   
-                    <!-- 7. Food Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="food" role="button" data-bs-toggle="dropdown">
-                            Food
-                        </a>
-                        <ul class="dropdown-menu filter-dropdown" aria-labelledby="food">
-                            <li>
-                                <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="food" id="veg"><label class="form-check-label" for="veg">Veg</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="food" id="nonveg"><label class="form-check-label" for="nonveg">Non-veg</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="food" id="both_food"><label class="form-check-label" for="both_food">Both</label></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- 8. Amenities Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="amenities" role="button" data-bs-toggle="dropdown">
-                            Amenities
-                        </a>
-                        <ul class="dropdown-menu filter-dropdown" aria-labelledby="amenities">
-                            <li>
-                                <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="wifi" id="wifi"><label class="form-check-label" for="wifi">Wi-Fi</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="ac" id="ac"><label class="form-check-label" for="ac">AC / Non-AC</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="geyser" id="geyser"><label class="form-check-label" for="geyser">Geyser</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="washing-machine" id="washing"><label class="form-check-label" for="washing">Washing Machine</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="study-table" id="study"><label class="form-check-label" for="study">Study Table</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="cupboard-locker" id="cupboard"><label class="form-check-label" for="cupboard">Cupboard/Locker</label></div>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- Action Buttons -->
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0" align-items="right">
-                        <li class="nav-item">
-                            <button class="btn btn-primary btn-sm me-md-2" onclick="resetFilters()">Reset</button>
-                        </li> 
-                        <li class="nav-item">
-                            <button class="btn btn-primary btn-sm" onclick="applyFilters()">Apply Filters</button>
-                        </li>
-                    </ul>
-
-
-
-                </ul>
             </div>
         </div>
-    </nav>
-
-
-
-<?php
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "sm";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// ADD 'id' to the SELECT query
-$sql = "SELECT id, hostel_name, description, amenities, food, price, image_path FROM hostel";
-$result = $conn->query($sql);
-
-if ($result === false) {
-    die("Error in query: " . $conn->error);
-}
-
-// Check login status for buttons
-$is_logged_in = isset($_SESSION['reg_id']) && $_SESSION['reg_id'] > 0;
-?>
-
-<section class="room__container" id="room">
-    <p class="section__subheader">ROOMS</p>
-    <h2 class="section__header">Hand Picked Rooms</h2>
-    
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="rooms-container">
-        <?php
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-        ?>
-            <div class="col">
-                <div class="card h-100">
-                    <img src="/sm/admin/<?php echo htmlspecialchars($row['image_path']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($row['hostel_name']); ?>">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title"><?php echo htmlspecialchars($row['hostel_name']); ?></h5>
-                        <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
-                        <p class="card-text"><strong>Amenities:</strong> <?php echo htmlspecialchars($row['amenities']); ?></p>
-                        <p class="card-text"><strong>Food:</strong> <?php echo htmlspecialchars($row['food']); ?></p>
-
-                        <div class="mt-auto">
-                            <h3 class="price-tag mb-3">
-                                <i class="bi bi-currency-rupee"></i><?php echo number_format($row['price']); ?>/month
-                            </h3>
-                            
-                            <!-- UPDATED BUTTON -->
-                            <button type="button" 
-                                    class="btn btn-primary w-100" 
-                                    onclick="checkLoginAndBook(<?php echo $row['id']; ?>, <?php echo $row['price']; ?>, <?php echo $is_logged_in ? 'true' : 'false'; ?>)">
-                                Book Now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php
-            }
-        } else {
-            echo '<div class="col-12"><p class="text-center">No hostels found in the database.</p></div>';
-        }
-        ?>
     </div>
-</section>
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-<script>
-// Filter functions
-function getFilterValues() {
-    var filters = {};
-    filters.room_type = [];
-    $('input[name="room_type"]:checked').each(function() {
-        filters.room_type.push($(this).next('label').text().trim());
-    });
-    filters.price_range = [];
-    $('input[name="price_range"]:checked').each(function() {
-        filters.price_range.push($(this).attr('id'));
-    });
-    var ratingChecked = $('input[name="rating"]:checked').attr('id');
-    filters.rating = ratingChecked ? ratingChecked.replace('r', '') : '';
-    filters.occupancy = $('input[name="occupancy_type"]:checked').next('label').text().trim() || '';
-    filters.food = $('input[name="food"]:checked').next('label').text().trim() || '';
-    filters.amenities = [];
-    $('input[name="amenities"]:checked').each(function() {
-        filters.amenities.push($(this).val());
-    });
-    return filters;
-}
+            <?php
+                }
+            } else {
+                echo '<div class="col-12"><div class="text-center py-5"><i class="bi bi-inbox display-1 text-muted mb-4"></i><h4>No Rooms Available</h4><p class="text-muted">No available rooms found for this hostel. Please check back later.</p></div></div>';
+            }
+            
+            ?>
 
-function applyFilters() {
-    var filters = getFilterValues();
-    $('#rooms-container').html('<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+
+
+
+
+
+
+
+
+
+
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    $.ajax({
-        url: 'filter_rooms.php',
-        type: 'POST',
-        data: {
-            room_type: filters.room_type,
-            price_range: filters.price_range,
-            rating: filters.rating,
-            occupancy: filters.occupancy,
-            food: filters.food,
-            amenities: filters.amenities
-        },
-        success: function(response) {
-            $('#rooms-container').html(response);
-        },
-        error: function() {
-            $('#rooms-container').html('<div class="col-12"><div class="alert alert-danger">Error loading rooms. Please try again.</div></div>');
-        }
-    });
-}
-
-function resetFilters() {
-    $('input[type="checkbox"]').prop('checked', false);
-    $('input[type="radio"]').prop('checked', false);
-    applyFilters();
-}
-
-$(document).ready(function() {
-    applyFilters();
-});
-</script>
-
-<!-- SINGLE checkLoginAndBook FUNCTION - ONLY ONE -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-function checkLoginAndBook(hostelId, price, isLoggedIn) {
-    if (!isLoggedIn) {
+    <script>
+    function loginFirst(roomId) {
         Swal.fire({
-            icon: 'warning',
-            title: 'Please Login First',
-            text: 'You need to login before booking a hostel',
-            confirmButtonText: 'Go to Login',
-            confirmButtonColor: '#3498db',
-            allowOutsideClick: false
+            icon: 'info',
+            title: 'Login Required',
+            text: 'Please login to book a room',
+            confirmButtonText: 'Go to Login'
         }).then((result) => {
             if (result.isConfirmed) {
-                sessionStorage.setItem('pendingBooking', JSON.stringify({
-                    hostelId: hostelId, 
-                    price: price
-                }));
-                window.location.href = 'index.php?openLogin=true&redirect=rooms1';
+                window.location.href = 'login.php';
             }
         });
-    } else {
-        
-        window.location.href = 'payment.php?hostel_id=' + hostelId + '&price=' + price;
     }
+    
+   let currentSwalInstance = null;
+let basePriceGlobal = 0;
+
+function bookRoom(roomId, roomNumber, price, hostelName) {
+    basePriceGlobal = price; // Store globally
+    
+    Swal.fire({
+        title: 'Book Room Confirmation',
+        html: `
+            <style>
+                .booking-summary { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+                .amenity-item { display: flex; align-items: center; margin-bottom: 12px; font-size: 14px; padding: 8px; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+                .amenity-item:hover { background: #e9ecef; }
+                .amenity-checkbox { margin-right: 12px; width: 18px; height: 18px; }
+                .amenity-price { margin-left: auto; color: #28a745; font-weight: 600; }
+                .total-section { font-size: 18px; font-weight: bold; margin-top: 20px; padding-top: 15px; border-top: 2px solid #dee2e6; }
+                .total-highlight { color: #28a745; font-size: 22px; }
+            </style>
+            <div class="booking-summary">
+                <h6><strong>${hostelName}</strong></h6>
+                <p><strong>Room:</strong> ${roomNumber}</p>
+                <p><strong>Base Price:</strong> ₹${price.toLocaleString()}/bed/month</p>
+            </div>
+            
+            <h6>Select Amenities (Optional):</h6>
+            <div id="amenities-list">
+                <!-- Amenities will be populated by JS -->
+            </div>
+            
+            <div class="total-section">
+                <div>Base Room: ₹${price.toLocaleString()}</div>
+                <div id="amenities-total" style="color: #6c757d;">Amenities: ₹0</div>
+                <div class="total-highlight">
+                    <strong>Total: ₹<span id="total-price">${price.toLocaleString()}</span></strong>
+                </div>
+            </div>
+        `,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Proceed to Payment',
+        cancelButtonText: 'Cancel',
+        width: '600px',
+        didOpen: () => {
+            currentSwalInstance = Swal.getPopup();
+            populateAmenities();
+        },
+        preConfirm: () => {
+            const totalPrice = parseInt(document.getElementById('total-price').textContent.replace(/[^\d]/g, ''));
+            return {
+                roomId, roomNumber, basePrice: price, totalPrice, 
+                amenities: JSON.stringify(selectedAmenities)
+            };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const data = result.value;
+            const hostelId = <?php echo $hostel_id; ?>; // PHP variable
+            window.location.href = `payment.php?room_id=${data.roomId}&room_number=${encodeURIComponent(data.roomNumber)}&price=${data.totalPrice}&hostel_id=${hostelId}&amenities=${data.amenities}`;
+        }
+        // Reset
+        selectedAmenities = {};
+    });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const pendingBooking = sessionStorage.getItem('pendingBooking');
-    
-    if (pendingBooking) {
-        const booking = JSON.parse(pendingBooking);
-        sessionStorage.removeItem('pendingBooking');
-        window.location.href = 'payment.php?hostel_id=' + booking.hostelId + '&price=' + booking.price;
-    }
-});
-</script>
+const amenities = {
+    'ac': { name: 'Air Conditioning', price: 1000 },
+    'wifi': { name: 'High-Speed WiFi', price: 500 },
+    'laundry': { name: 'Weekly Laundry', price: 800 },
+    'meals': { name: '3 Meals/Day', price: 3000 },
+    'gym': { name: 'Gym Access', price: 1200 },
+    'cleaning': { name: 'Daily Cleaning', price: 600 },
+    'parking': { name: 'Parking', price: 700 }
+};
 
+let selectedAmenities = {};
+
+function populateAmenities() {
+    const container = currentSwalInstance.querySelector('#amenities-list');
+    container.innerHTML = Object.entries(amenities).map(([key, amenity]) => `
+        <div class="amenity-item" onclick="toggleAmenity('${key}')">
+            <input type="checkbox" class="amenity-checkbox" id="amenity-${key}" onchange="handleAmenityChange('${key}', this.checked)">
+            <label for="amenity-${key}" style="margin: 0; cursor: pointer; flex: 1;">${amenity.name}</label>
+            <span class="amenity-price">+₹${amenity.price.toLocaleString()}</span>
+        </div>
+    `).join('');
+}
+
+function toggleAmenity(key) {
+    const checkbox = currentSwalInstance.querySelector(`#amenity-${key}`);
+    checkbox.checked = !checkbox.checked;
+    handleAmenityChange(key, checkbox.checked);
+}
+
+function handleAmenityChange(key, isChecked) {
+    if (isChecked) {
+        selectedAmenities[key] = true;
+    } else {
+        delete selectedAmenities[key];
+    }
+    updateTotal();
+}
+
+function updateTotal() {
+    const amenitiesTotal = Object.keys(selectedAmenities).reduce((sum, key) => {
+        return selectedAmenities[key] ? sum + (amenities[key]?.price || 0) : sum;
+    }, 0);
+    
+    const total = basePriceGlobal + amenitiesTotal;
+    
+    currentSwalInstance.querySelector('#amenities-total').textContent = `Amenities: ₹${amenitiesTotal.toLocaleString()}`;
+    currentSwalInstance.querySelector('#total-price').textContent = total.toLocaleString();
+}
+    </script> 
+
+  
 </body>
 </html>

@@ -20,10 +20,12 @@ $sql = "SELECT id, hostel_name, description, amenities, food, price, image_path,
 $conditions = [];
 
 // 1. Filter by Room Type (multiple)
+
 if (isset($_POST['room_type']) && !empty($_POST['room_type'])) {
     $room_types = $_POST['room_type'];
     $conditions[] = "(room_type LIKE '%" . implode("%' OR room_type LIKE '%", $room_types) . "%')";
 }
+
 
 // 2. Filter by Price Range (multiple)
 if (isset($_POST['price_range']) && !empty($_POST['price_range'])) {
@@ -47,6 +49,13 @@ if (isset($_POST['price_range']) && !empty($_POST['price_range'])) {
     if (!empty($price_conditions)) {
         $conditions[] = "(" . implode(" OR ", $price_conditions) . ")";
     }
+}
+
+
+// Filter by Location (if provided)
+if (isset($_POST['location']) && !empty($_POST['location'])) {
+    $location = $conn->real_escape_string($_POST['location']);
+    $conditions[] = "(hostel_name LIKE '%$location%' OR description LIKE '%$location%')";
 }
 
 // 5. Filter by Occupancy
@@ -100,11 +109,14 @@ if ($result && $result->num_rows > 0) {
                         <h3 class="price-tag mb-3">
                             <i class="bi bi-currency-rupee"></i><?php echo number_format($row['price']); ?>/month
                         </h3>
-                        <button type="button" 
+                       <button type="button" 
         class="btn btn-primary w-100" 
-        onclick="checkLoginAndBook(<?php echo $row['id']; ?>, <?php echo $row['price']; ?>, <?php echo $is_logged_in ? 'true' : 'false'; ?>)">
-    Book Now
+        onclick="window.location.href='rooms1.php?hostel_id=<?php echo $row['id']; ?>'">
+    View Rooms
 </button>
+
+
+
 
                     </div>
                 </div>

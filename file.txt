@@ -1,0 +1,5 @@
+<button type="button"
+                        class="btn btn-primary w-100"
+                        onclick="bookRoom(<?php echo $room['id']; ?>, '<?php echo addslashes($room['room_number']); ?>', <?php echo $room['price']; ?>)">
+                    Book Room
+                </button>

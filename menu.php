@@ -208,31 +208,31 @@
             </div>
             <ul class="menu__items">
                 <li>
-                    <img src="assets/menu-1.jpg" alt="Eggs & Bacon" />
+                    <img src="assets/menu-1.jpg" alt="Breakfast" />
                     <div class="menu__details">
-                        <h4>Eggs & Bacon</h4>
-                        <p>A unique spin on the beloved breakfast combination.</p>
+                        <h4>Breakfast</h4>
+                        <p>Healthy and energizing breakfast options served fresh to kick-start your day.</p>
                     </div>
                 </li>
                 <li>
-                    <img src="assets/menu-2.jpg" alt="Tea or Coffee" />
+                    <img src="assets/menu-2.jpg" alt="Veg" />
                     <div class="menu__details">
-                        <h4>Tea or Coffee</h4>
-                        <p>A classic choice for your daily comfort and calmness.</p>
+                        <h4>Veg</h4>
+                        <p>Nutritious and well-balanced vegetarian meals prepared with fresh ingredients for daily nourishment.</p>
                     </div>
                 </li>
                 <li>
-                    <img src="assets/menu-3.jpg" alt="Chia Oatmeal" />
+                    <img src="assets/menu-3.jpg" alt="Non-veg" />
                     <div class="menu__details">
-                        <h4>Chia Oatmeal</h4>
-                        <p>A wholesome, nutrient-packed breakfast delight.</p>
+                        <h4>Non-veg</h4>
+                        <p>Protein-rich non-vegetarian dishes prepared hygienically and served on selected days.</p>
                     </div>
                 </li>
                 <li>
-                    <img src="assets/menu-4.jpg" alt="Fruit Parfait" />
+                    <img src="assets/menu-4.jpg" alt="snacks" />
                     <div class="menu__details">
-                        <h4>Fruit Parfait</h4>
-                        <p>A refreshing blend of fruits and creamy goodness.</p>
+                        <h4>snacks</h4>
+                        <p>Light and tasty evening snacks served with beverages to keep you refreshed.</p>
                     </div>
                 </li>
             </ul>

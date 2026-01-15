@@ -9,13 +9,19 @@ if (!isset($_SESSION['reg_id']) || $_SESSION['reg_id'] == 0) {
 }
 
 // Get details from URL
-if (!isset($_GET['hostel_id']) || !isset($_GET['price'])) {
+if (!isset($_GET['price'])) {
     header("Location: rooms1.php");
     exit();
 }
 
-$hostel_id = (int)$_GET['hostel_id'];
+$hostel_id = isset($_GET['hostel_id']) ? (int)$_GET['hostel_id'] : 0;
+$room_id = isset($_GET['room_id']) ? (int)$_GET['room_id'] : 0;
 $price = (float)$_GET['price'];
+$room_number = $_GET['room_number'] ?? '';
+$total_price = (float)($_GET['price'] ?? 0);
+$amenities = $_GET['amenities'] ?? 'none';
+$base_price = (float)($_GET['base_price'] ?? 0);
+
 
 // Get user details
 $stmt = $conn->prepare("SELECT * FROM register WHERE reg_id = ?");
