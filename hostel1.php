@@ -2,24 +2,25 @@
 session_start();
 $is_logged_in = isset($_SESSION['reg_id']) && $_SESSION['reg_id'] > 0;
 
-// Get filters from URL parameters (from booking page)
-$booking_search = null;
-if (isset($_GET['room_type']) || isset($_GET['price_range']) || isset($_GET['location'])) {
-    $booking_search = [
-        'room_type' => isset($_GET['room_type']) ? $_GET['room_type'] : '',
-        'price_range' => isset($_GET['price_range']) ? $_GET['price_range'] : '',
-        'location' => isset($_GET['location']) ? $_GET['location'] : '',
-        'active' => true
-    ];
-}
+// ✅ SAFE: Capture initial filters from book.php - NO ARRAYS IN STRINGS
+$initial_filters = [
+    'room_type' => isset($_GET['room_type']) ? trim($_GET['room_type']) : '',
+    'price_range' => isset($_GET['price_range']) ? trim($_GET['price_range']) : '',
+    'location' => isset($_GET['location']) ? trim($_GET['location']) : ''
+];
+
+// ✅ SAFE DEBUG - Only scalars, no arrays in echo
 ?>
-
-
+<!-- DEBUG INFO (Safe - no arrays) -->
+<script>
+console.log('🔍 PHP $_GET raw:', <?php echo json_encode($_GET); ?>);
+console.log('🔍 Parsed filters:', <?php echo json_encode($initial_filters); ?>);
+console.log('🔍 Full URL:', <?php echo json_encode($_SERVER['REQUEST_URI']); ?>);
+</script>
 
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,8 +28,8 @@ if (isset($_GET['room_type']) || isset($_GET['price_range']) || isset($_GET['loc
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-
     <style>
+        /* Your existing CSS styles */
         @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap");
 
         :root {
@@ -319,16 +320,48 @@ if (isset($_GET['room_type']) || isset($_GET['price_range']) || isset($_GET['loc
             object-position: center top;
             /* Focus on room top */
         }
+        .badge-filter {
+            background-color: #f6ac0f;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.25rem;
+            display: inline-block;
+        }
+        .active-filters {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 
 <body>
-    <p style="font-size: 2.5rem; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; color: #2c3e50; margin: 2rem 0; line-height: 1.2;">
+    <p style="font-size: 2.5rem; font-weight: 700; text-align: center; margin: 2rem 0;">
         Discover Your Perfect Hostel with Smart Filters
     </p>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-color-white">
-        <div class="container-xxl px-5" style=" margin-top: 1rem; margin-bottom: 1rem;">
+    <!-- Display Active Initial Filters -->
+    <?php if (!empty(array_filter($initial_filters))): ?>
+    <div class="container active-filters">
+        <strong>Active Search:</strong>
+        <?php if ($initial_filters['room_type']): ?>
+            <span class="badge-filter">Room: <?php echo htmlspecialchars($initial_filters['room_type']); ?></span>
+        <?php endif; ?>
+        <?php if ($initial_filters['price_range']): ?>
+            <span class="badge-filter">Max Price: ₹<?php echo number_format($initial_filters['price_range']); ?></span>
+        <?php endif; ?>
+        <?php if ($initial_filters['location']): ?>
+            <span class="badge-filter">Location: <?php echo htmlspecialchars($initial_filters['location']); ?></span>
+        <?php endif; ?>
+        <a href="hostel1.php" class="btn btn-sm btn-outline-secondary ms-2">Clear Search</a>
+    </div>
+    <?php endif; ?>
+
+    <!-- Secondary Filters Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container-xxl px-5" style="margin-top: 1rem; margin-bottom: 1rem;">
             <a class="navbar-brand" href="#">Hostels</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavFilters">
                 <span class="navbar-toggler-icon"></span>
@@ -336,11 +369,7 @@ if (isset($_GET['room_type']) || isset($_GET['price_range']) || isset($_GET['loc
             <div class="collapse navbar-collapse" id="navbarNavFilters">
                 <ul class="navbar-nav me-auto">
 
-                    <!-- 1. Room Type Dropdown -->
-                    <li class="nav-item dropdown">
-
-
-                        <!-- 2. Price Dropdown -->
+                    <!-- Price Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="price" role="button" data-bs-toggle="dropdown">
                             Price
@@ -348,16 +377,16 @@ if (isset($_GET['room_type']) || isset($_GET['price_range']) || isset($_GET['loc
                         <ul class="dropdown-menu filter-dropdown" aria-labelledby="price">
                             <li>
                                 <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p1"><label class="form-check-label" for="p1">₹3,000–₹5,000</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p2"><label class="form-check-label" for="p2">₹5,000–₹8,000</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p3"><label class="form-check-label" for="p3">₹8,000–₹12,000</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p4"><label class="form-check-label" for="p4">₹12,000–₹15,000</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p1" value="3000-5000"><label class="form-check-label" for="p1">₹3,000–₹5,000</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p2" value="5000-8000"><label class="form-check-label" for="p2">₹5,000–₹8,000</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p3" value="8000-12000"><label class="form-check-label" for="p3">₹8,000–₹12,000</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="price_range" id="p4" value="12000-15000"><label class="form-check-label" for="p4">₹12,000–₹15,000</label></div>
                                 </div>
                             </li>
                         </ul>
                     </li>
 
-                    <!-- 3. Gender Dropdown -->
+                    <!-- Gender Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="gender" role="button" data-bs-toggle="dropdown">
                             Gender
@@ -365,14 +394,14 @@ if (isset($_GET['room_type']) || isset($_GET['price_range']) || isset($_GET['loc
                         <ul class="dropdown-menu filter-dropdown" aria-labelledby="gender">
                             <li>
                                 <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="gender" id="male"><label class="form-check-label" for="male">Male</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="gender" id="female"><label class="form-check-label" for="female">Female</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="gender" id="male" value="Male"><label class="form-check-label" for="male">Male</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="gender" id="female" value="Female"><label class="form-check-label" for="female">Female</label></div>
                                 </div>
                             </li>
                         </ul>
                     </li>
 
-                    <!-- 4. Rating Dropdown -->
+                    <!-- Rating Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="rating" role="button" data-bs-toggle="dropdown">
                             Rating
@@ -380,17 +409,17 @@ if (isset($_GET['room_type']) || isset($_GET['price_range']) || isset($_GET['loc
                         <ul class="dropdown-menu filter-dropdown" aria-labelledby="rating">
                             <li>
                                 <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r1"><label class="form-check-label" for="r1">1+ stars</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r2"><label class="form-check-label" for="r2">2+ stars</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r3"><label class="form-check-label" for="r3">3+ stars</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r4"><label class="form-check-label" for="r4">4+ stars</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r5"><label class="form-check-label" for="r5">5 stars only</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r1" value="1"><label class="form-check-label" for="r1">1+ stars</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r2" value="2"><label class="form-check-label" for="r2">2+ stars</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r3" value="3"><label class="form-check-label" for="r3">3+ stars</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r4" value="4"><label class="form-check-label" for="r4">4+ stars</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r5" value="5"><label class="form-check-label" for="r5">5 stars only</label></div>
                                 </div>
                             </li>
                         </ul>
                     </li>
 
-                    <!-- 5. Occupancy Dropdown -->
+                    <!-- Occupancy Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="occupancy" role="button" data-bs-toggle="dropdown">
                             Occupancy
@@ -398,16 +427,15 @@ if (isset($_GET['room_type']) || isset($_GET['price_range']) || isset($_GET['loc
                         <ul class="dropdown-menu filter-dropdown" aria-labelledby="occupancy">
                             <li>
                                 <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="occupancy_type" id="student"><label class="form-check-label" for="student">Student</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="occupancy_type" id="working"><label class="form-check-label" for="working">Working</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="occupancy_type" id="both"><label class="form-check-label" for="both">Both</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="occupancy_type" id="student" value="Student"><label class="form-check-label" for="student">Student</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="occupancy_type" id="working" value="Working"><label class="form-check-label" for="working">Working</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="occupancy_type" id="both" value="Both"><label class="form-check-label" for="both">Both</label></div>
                                 </div>
                             </li>
                         </ul>
                     </li>
 
-
-                    <!-- 7. Food Dropdown -->
+                    <!-- Food Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="food" role="button" data-bs-toggle="dropdown">
                             Food
@@ -415,15 +443,15 @@ if (isset($_GET['room_type']) || isset($_GET['price_range']) || isset($_GET['loc
                         <ul class="dropdown-menu filter-dropdown" aria-labelledby="food">
                             <li>
                                 <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="food" id="veg"><label class="form-check-label" for="veg">Veg</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="food" id="nonveg"><label class="form-check-label" for="nonveg">Non-veg</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="radio" name="food" id="both_food"><label class="form-check-label" for="both_food">Both</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="food" id="veg" value="Veg"><label class="form-check-label" for="veg">Veg</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="food" id="nonveg" value="Non-veg"><label class="form-check-label" for="nonveg">Non-veg</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="radio" name="food" id="both_food" value="Both"><label class="form-check-label" for="both_food">Both</label></div>
                                 </div>
                             </li>
                         </ul>
                     </li>
 
-                    <!-- 8. Amenities Dropdown -->
+                    <!-- Amenities Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="amenities" role="button" data-bs-toggle="dropdown">
                             Amenities
@@ -431,205 +459,151 @@ if (isset($_GET['room_type']) || isset($_GET['price_range']) || isset($_GET['loc
                         <ul class="dropdown-menu filter-dropdown" aria-labelledby="amenities">
                             <li>
                                 <div class="px-3 py-2">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="wifi" id="wifi"><label class="form-check-label" for="wifi">Wi-Fi</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="ac" id="ac"><label class="form-check-label" for="ac">AC / Non-AC</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="geyser" id="geyser"><label class="form-check-label" for="geyser">Geyser</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="washing-machine" id="washing"><label class="form-check-label" for="washing">Washing Machine</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="study-table" id="study"><label class="form-check-label" for="study">Study Table</label></div>
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="cupboard-locker" id="cupboard"><label class="form-check-label" for="cupboard">Cupboard/Locker</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="Wi-Fi" id="wifi"><label class="form-check-label" for="wifi">Wi-Fi</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="AC" id="ac"><label class="form-check-label" for="ac">AC / Non-AC</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="Geyser" id="geyser"><label class="form-check-label" for="geyser">Geyser</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="Washing Machine" id="washing"><label class="form-check-label" for="washing">Washing Machine</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="Study Table" id="study"><label class="form-check-label" for="study">Study Table</label></div>
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="amenities" value="Cupboard" id="cupboard"><label class="form-check-label" for="cupboard">Cupboard/Locker</label></div>
                                 </div>
                             </li>
                         </ul>
                     </li>
+                </ul>
 
-                    <!-- Action Buttons -->
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0" align-items="right">
-                        <li class="nav-item">
-                            <button class="btn btn-primary btn-sm me-md-2" onclick="resetFilters()">Reset</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="btn btn-primary btn-sm" onclick="applyFilters()">Apply Filters</button>
-                        </li>
-                    </ul>
-
-
-
+                <!-- Action Buttons -->
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <button class="btn btn-primary btn-sm me-md-2" onclick="resetFilters()">Reset</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-primary btn-sm" onclick="applyFilters()">Apply Filters</button>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-
-
-
-    <?php
-    // Database connection
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "sm";
-
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    // ADD 'id' to the SELECT query
-    $sql = "SELECT id, hostel_name, description, amenities, food, price, image_path FROM hostel";
-    $result = $conn->query($sql);
-
-    if ($result === false) {
-        die("Error in query: " . $conn->error);
-    }
-
-    // Check login status for buttons
-    $is_logged_in = isset($_SESSION['reg_id']) && $_SESSION['reg_id'] > 0;
-    ?>
-
+    <!-- Rooms Display Section -->
     <section class="room__container" id="room">
-
-
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="rooms-container">
-            <?php
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-            ?>
-                    <div class="col">
-                        <div class="card h-100">
-                            <img src="/sm/admin/<?php echo htmlspecialchars($row['image_path']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($row['hostel_name']); ?>">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title"><?php echo htmlspecialchars($row['hostel_name']); ?></h5>
-                                <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
-                                <p class="card-text"><strong>Amenities:</strong> <?php echo htmlspecialchars($row['amenities']); ?></p>
-                                <p class="card-text"><strong>Food:</strong> <?php echo htmlspecialchars($row['food']); ?></p>
-
-                                <div class="mt-auto">
-                                    <h3 class="price-tag mb-3">
-                                        <i class="bi bi-currency-rupee"></i><?php echo number_format($row['price']); ?>/month
-                                    </h3>
-
-                                    <!-- UPDATED BUTTON -->
-                                    <button type="button"
-                                        class="btn btn-primary w-100"
-                                        onclick="window.location.href='rooms1.php?hostel_id=<?php echo $row['id']; ?>'">
-                                        View Rooms
-                                    </button>
-
-
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            <?php
-                }
-            } else {
-                echo '<div class="col-12"><p class="text-center">No hostels found in the database.</p></div>';
-            }
-            ?>
+        <div class="container">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-3" id="rooms-container">
+                <!-- Results will be loaded here via AJAX -->
+            </div>
         </div>
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-    <script>
-        // Filter functions
-        function getFilterValues() {
-            var filters = {};
-            filters.room_type = [];
-            $('input[name="room_type"]:checked').each(function() {
-                filters.room_type.push($(this).next('label').text().trim());
-            });
-            filters.price_range = [];
-            $('input[name="price_range"]:checked').each(function() {
-                filters.price_range.push($(this).attr('id'));
-            });
-            var ratingChecked = $('input[name="rating"]:checked').attr('id');
-            filters.rating = ratingChecked ? ratingChecked.replace('r', '') : '';
-            filters.occupancy = $('input[name="occupancy_type"]:checked').next('label').text().trim() || '';
-            filters.food = $('input[name="food"]:checked').next('label').text().trim() || '';
-            filters.amenities = [];
-            $('input[name="amenities"]:checked').each(function() {
-                filters.amenities.push($(this).val());
-            });
-            return filters;
-        }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        function applyFilters() {
-            var filters = getFilterValues();
-            $('#rooms-container').html('<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            $.ajax({
-                url: 'filter_rooms.php',
-                type: 'POST',
-                data: {
-                    room_type: filters.room_type,
-                    price_range: filters.price_range,
-                    rating: filters.rating,
-                    occupancy: filters.occupancy,
-                    food: filters.food,
-                    amenities: filters.amenities
-                },
-                success: function(response) {
-                    $('#rooms-container').html(response);
-                },
-                error: function() {
-                    $('#rooms-container').html('<div class="col-12"><div class="alert alert-danger">Error loading rooms. Please try again.</div></div>');
+<script>
+    // ✅ SINGLE SOURCE OF TRUTH: PHP passes filters directly to JS
+    const initialFilters = <?php echo json_encode($initial_filters); ?>;
+    
+    console.log('🔍 PHP PASSED filters:', initialFilters);
+
+    function getFilterValues() {
+        const filters = {
+            // Initial filters from book.php (via PHP)
+            initial_room_type: initialFilters.room_type || '',
+            initial_price_range: initialFilters.price_range || '',
+            initial_location: initialFilters.location || '',
+            
+            // Secondary filters from hostel1.php form
+            gender: $('input[name="gender"]:checked').val() || '',
+            rating: $('input[name="rating"]:checked').val() || '',
+            food: $('input[name="food"]:checked').val() || '',
+            occupancy: $('input[name="occupancy_type"]:checked').val() || '',
+            amenities: []
+        };
+
+        // Collect amenities checkboxes
+        $('input[name="amenities"]:checked').each(function() {
+            filters.amenities.push($(this).val());
+        });
+
+        console.log('📤 Sending to filter_rooms.php:', filters);
+        return filters;
+    }
+
+    function applyFilters() {
+        const filters = getFilterValues();
+        
+        $('#rooms-container').html(`
+            <div class="col-12 text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Searching hostels matching: ${initialFilters.room_type || 'All types'}</p>
+            </div>
+        `);
+
+        $.ajax({
+            url: 'filter_rooms.php',
+            type: 'POST',
+            data: filters,
+            success: function(response) {
+                console.log('✅ Success - Response length:', response.length);
+                $('#rooms-container').html(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('❌ AJAX Error:', error, xhr.responseText);
+                $('#rooms-container').html(`
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <h5>Error loading results</h5>
+                            <p>${error}</p>
+                            <details>${xhr.responseText}</details>
+                        </div>
+                    </div>
+                `);
+            }
+        });
+    }
+
+    function resetFilters() {
+        // Reset only secondary filters (keep book.php filters)
+        $('input[type="checkbox"]').prop('checked', false);
+        $('input[type="radio"]').prop('checked', false);
+        applyFilters();
+    }
+
+    // ✅ SINGLE document.ready - no duplicates
+    $(document).ready(function() {
+        console.log('🚀 Page ready - Initial filters:', initialFilters);
+        setTimeout(applyFilters, 200); // Small delay for DOM
+    });
+
+    // Login check function
+    function checkLoginAndBook(hostelId, price, isLoggedIn) {
+        if (!isLoggedIn) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Please Login First',
+                text: 'You need to login before booking a hostel',
+                confirmButtonText: 'Go to Login',
+                confirmButtonColor: '#3498db',
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    sessionStorage.setItem('pendingBooking', JSON.stringify({
+                        hostelId: hostelId,
+                        price: price
+                    }));
+                    window.location.href = 'index.php?openLogin=true&redirect=rooms1';
                 }
             });
+        } else {
+            window.location.href = 'payment.php?hostel_id=' + hostelId + '&price=' + price;
         }
+    }
+</script>
 
-        function resetFilters() {
-            $('input[type="checkbox"]').prop('checked', false);
-            $('input[type="radio"]').prop('checked', false);
-            applyFilters();
-        }
-
-        $(document).ready(function() {
-            applyFilters();
-        });
-    </script>
-
-    <!-- SINGLE checkLoginAndBook FUNCTION - ONLY ONE -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function checkLoginAndBook(hostelId, price, isLoggedIn) {
-            if (!isLoggedIn) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Please Login First',
-                    text: 'You need to login before booking a hostel',
-                    confirmButtonText: 'Go to Login',
-                    confirmButtonColor: '#3498db',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        sessionStorage.setItem('pendingBooking', JSON.stringify({
-                            hostelId: hostelId,
-                            price: price
-                        }));
-                        window.location.href = 'index.php?openLogin=true&redirect=rooms1';
-                    }
-                });
-            } else {
-
-                window.location.href = 'payment.php?hostel_id=' + hostelId + '&price=' + price;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const pendingBooking = sessionStorage.getItem('pendingBooking');
-
-            if (pendingBooking) {
-                const booking = JSON.parse(pendingBooking);
-                sessionStorage.removeItem('pendingBooking');
-                window.location.href = 'payment.php?hostel_id=' + booking.hostelId + '&price=' + booking.price;
-            }
-        });
-    </script>
 
 </body>
-
 </html>

@@ -284,8 +284,8 @@
 
 <body>
     <section class="room__container" id="rooms">
-    <p class="section__subheader">Rooms</p>
-        <h2 class="section__header">Hand Picked Rooms</h2>
+    <p class="section__subheader">Hostels</p>
+        <h2 class="section__header">Hand Picked Hostels</h2>
         <div class="room__grid">
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <div class="col">

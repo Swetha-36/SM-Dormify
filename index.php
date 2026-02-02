@@ -15,7 +15,6 @@
     <!-- Global styles for whole site -->
     <link rel="stylesheet" href="style.css?v=3">
 
-    <link rel="icon" type="image/png" href="assets/favicon.png" />
     <title>SM DORMIFY</title>
 
     <!-- ✅ INLINE STYLES TO OVERRIDE BOOTSTRAP BUTTONS -->
@@ -258,12 +257,11 @@
                             </div>
                         </div>
 
-                        <div class="text-center">
+                        <div class="text-center mt-2">
                             <small class="text-muted">
                                 Already have an account?
                                 <a href="#" class="text-primary text-decoration-none"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#loginModal" data-bs-dismiss="modal">
+                                    data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">
                                     Login here
                                 </a>
                             </small>

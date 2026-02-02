@@ -1,49 +1,74 @@
-<?php 
+<?php
 session_start();
-$is_logged_in = isset($_SESSION['reg_id']) && $_SESSION['reg_id'] > 0;
 
-// Database connection
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "sm";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
-
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Start building SQL query
-$sql = "SELECT id, hostel_name, description, amenities, food, price, image_path, occupancy_type, room_type, hostel_type FROM hostel WHERE 1=1";
+// ✅ DEBUG: Log received POST data
+error_log("filter_rooms.php POST data: " . print_r($_POST, true));
+
+// ✅ Get initial filters from book.php
+$initial_room_type = isset($_POST['initial_room_type']) ? trim($_POST['initial_room_type']) : '';
+$initial_price_range = isset($_POST['initial_price_range']) ? trim($_POST['initial_price_range']) : '';
+$initial_location = isset($_POST['initial_location']) ? trim($_POST['initial_location']) : '';
+
+// ✅ Get secondary filters
+$price_ranges = isset($_POST['price_range']) ? $_POST['price_range'] : [];
+$hostel_type = isset($_POST['hostel_type']) ? trim($_POST['hostel_type']) : '';
+$rating = isset($_POST['rating']) ? trim($_POST['rating']) : '';
+$occupancy = isset($_POST['occupancy']) ? trim($_POST['occupancy']) : '';
+$food = isset($_POST['food']) ? trim($_POST['food']) : '';
+$amenities = isset($_POST['amenities']) ? $_POST['amenities'] : [];
+
+// ✅ Build SQL query
+$sql = "SELECT id, hostel_name, description, amenities, food, price, image_path, 
+               hostel_type, rating, occupancy_type, room_type, location 
+        FROM hostel 
+        WHERE 1=1";
 
 $conditions = [];
+$types = "";
+$params = [];
 
-// 1. Filter by Room Type (multiple)
-
-if (isset($_POST['room_type']) && !empty($_POST['room_type'])) {
-    $room_types = $_POST['room_type'];
-    $conditions[] = "(room_type LIKE '%" . implode("%' OR room_type LIKE '%", $room_types) . "%')";
+// ✅ CRITICAL: Apply initial filters from book.php FIRST
+if (!empty($initial_room_type)) {
+    $conditions[] = "room_type = ?";
+    $types .= "s";
+    $params[] = $initial_room_type;
+    error_log("Filtering by room_type: " . $initial_room_type);
 }
 
+if (!empty($initial_price_range) && is_numeric($initial_price_range)) {
+    $conditions[] = "price <= ?";
+    $types .= "i";
+    $params[] = intval($initial_price_range);
+    error_log("Filtering by price <= " . $initial_price_range);
+}
 
-// 2. Filter by Price Range (multiple)
-if (isset($_POST['price_range']) && !empty($_POST['price_range'])) {
+if (!empty($initial_location)) {
+    $conditions[] = "location LIKE ?";
+    $types .= "s";
+    $params[] = "%" . $initial_location . "%";
+    error_log("Filtering by location: " . $initial_location);
+}
+
+// ✅ Apply secondary filters
+if (!empty($price_ranges)) {
     $price_conditions = [];
-    foreach ($_POST['price_range'] as $range) {
-        switch($range) {
-            case 'p1':
-                $price_conditions[] = "(price BETWEEN 3000 AND 5000)";
-                break;
-            case 'p2':
-                $price_conditions[] = "(price BETWEEN 5000 AND 8000)";
-                break;
-            case 'p3':
-                $price_conditions[] = "(price BETWEEN 8000 AND 12000)";
-                break;
-            case 'p4':
-                $price_conditions[] = "(price BETWEEN 12000 AND 15000)";
-                break;
+    foreach ($price_ranges as $range) {
+        if (strpos($range, '-') !== false) {
+            list($min, $max) = explode('-', $range);
+            $price_conditions[] = "(price >= ? AND price <= ?)";
+            $types .= "ii";
+            $params[] = intval($min);
+            $params[] = intval($max);
         }
     }
     if (!empty($price_conditions)) {
@@ -51,73 +76,92 @@ if (isset($_POST['price_range']) && !empty($_POST['price_range'])) {
     }
 }
 
-
-// Filter by Location (if provided)
-if (isset($_POST['location']) && !empty($_POST['location'])) {
-    $location = $conn->real_escape_string($_POST['location']);
-    $conditions[] = "(hostel_name LIKE '%$location%' OR description LIKE '%$location%')";
+if (!empty($hostel_type)) {
+    $conditions[] = "hostel_type = ?";
+    $types .= "s";
+    $params[] = $hostel_type;
 }
 
-// 5. Filter by Occupancy
-if (isset($_POST['occupancy']) && !empty($_POST['occupancy'])) {
-    $occupancy = $conn->real_escape_string($_POST['occupancy']);
-    if ($occupancy != 'Both') {
-        $conditions[] = "(occupancy_type = '$occupancy' OR occupancy_type = 'Both')";
+if (!empty($rating) && is_numeric($rating)) {
+    $conditions[] = "rating >= ?";
+    $types .= "i";
+    $params[] = intval($rating);
+}
+
+if (!empty($occupancy)) {
+    $conditions[] = "(occupancy_type = ? OR occupancy_type = 'Both')";
+    $types .= "s";
+    $params[] = $occupancy;
+}
+
+if (!empty($food)) {
+    $conditions[] = "(food = ? OR food = 'Both')";
+    $types .= "s";
+    $params[] = $food;
+}
+
+if (!empty($amenities)) {
+    foreach ($amenities as $amenity) {
+        $conditions[] = "amenities LIKE ?";
+        $types .= "s";
+        $params[] = "%" . $amenity . "%";
     }
 }
 
-// 7. Filter by Food
-if (isset($_POST['food']) && !empty($_POST['food'])) {
-    $food = $conn->real_escape_string($_POST['food']);
-    if ($food != 'Both') {
-        $conditions[] = "(food = '$food' OR food = 'Both')";
-    }
-}
-
-// 8. Filter by Amenities (multiple - all must be present)
-if (isset($_POST['amenities']) && !empty($_POST['amenities'])) {
-    foreach ($_POST['amenities'] as $amenity) {
-        $conditions[] = "amenities LIKE '%" . $conn->real_escape_string($amenity) . "%'";
-    }
-}
-
-// Add conditions to SQL
+// ✅ Build final SQL
 if (!empty($conditions)) {
     $sql .= " AND " . implode(" AND ", $conditions);
 }
 
-$sql .= " ORDER BY price ASC";
+$sql .= " ORDER BY rating DESC, price ASC";
 
-$result = $conn->query($sql);
+error_log("Final SQL: " . $sql);
+error_log("Parameters: " . print_r($params, true));
 
-// Generate ONLY the cards HTML (no <html>, <head>, <body>, or navbar)
-if ($result && $result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
+// ✅ Execute query
+$stmt = $conn->prepare($sql);
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$result = $stmt->get_result();
+
+// ✅ Generate output
+$is_logged_in = isset($_SESSION['reg_id']) && $_SESSION['reg_id'] > 0;
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
         ?>
         <div class="col">
             <div class="card h-100">
-                <img src="/sm/admin/<?php echo htmlspecialchars($row['image_path']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($row['hostel_name']); ?>">
+                <img src="/sm/admin/<?php echo htmlspecialchars($row['image_path']); ?>" 
+                     class="card-img-top" 
+                     alt="<?php echo htmlspecialchars($row['hostel_name']); ?>">
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title"><?php echo htmlspecialchars($row['hostel_name']); ?></h5>
                     <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
+                    <p class="card-text"><strong>Room Type:</strong> <?php echo htmlspecialchars($row['room_type']); ?></p>
+                    <p class="card-text"><strong>Location:</strong> <?php echo htmlspecialchars($row['location']); ?></p>
                     <p class="card-text"><strong>Amenities:</strong> <?php echo htmlspecialchars($row['amenities']); ?></p>
                     <p class="card-text"><strong>Food:</strong> <?php echo htmlspecialchars($row['food']); ?></p>
-                    <p class="card-text"><strong>Occupancy:</strong> <?php echo htmlspecialchars($row['occupancy_type']); ?></p>
-                    <p class="card-text"><strong>Room Type:</strong> <?php echo htmlspecialchars($row['room_type']); ?></p>
                     
+                    <?php if (!empty($row['rating'])): ?>
+                    <p class="card-text">
+                        <strong>Rating:</strong> 
+                        <?php for ($i = 0; $i < $row['rating']; $i++) echo '⭐'; ?>
+                    </p>
+                    <?php endif; ?>
+
                     <div class="mt-auto">
                         <h3 class="price-tag mb-3">
                             <i class="bi bi-currency-rupee"></i><?php echo number_format($row['price']); ?>/month
                         </h3>
-                       <button type="button" 
-        class="btn btn-primary w-100" 
-        onclick="window.location.href='rooms1.php?hostel_id=<?php echo $row['id']; ?>'">
-    View Rooms
-</button>
 
-
-
-
+                        <button type="button" 
+                                class="btn btn-primary w-100" 
+                                onclick="window.location.href='rooms1.php?hostel_id=<?php echo $row['id']; ?>'">
+                            View Rooms
+                        </button>
                     </div>
                 </div>
             </div>
@@ -125,13 +169,12 @@ if ($result && $result->num_rows > 0) {
         <?php
     }
 } else {
-    echo '<div class="col-12">
-            <div class="alert alert-warning text-center">
-                <h5>No hostels found matching your criteria</h5>
-                <p>Try adjusting your filters or <button class="btn btn-link p-0" onclick="resetFilters()">view all hostels</button></p>
-            </div>
-          </div>';
+    echo '<div class="col-12"><div class="alert alert-info text-center">
+            <h5>No hostels found matching your criteria</h5>
+            <p>Try adjusting your filters or <a href="hostel1.php">view all hostels</a></p>
+          </div></div>';
 }
 
+$stmt->close();
 $conn->close();
 ?>

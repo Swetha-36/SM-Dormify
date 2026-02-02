@@ -201,10 +201,6 @@
                     <p class="section__subheader">MENU</p>
                     <h2 class="section__header">Our Food Menu</h2>
                 </div>
-                <div class="section__nav">
-                    <span><i class="ri-arrow-left-line"></i></span>
-                    <span><i class="ri-arrow-right-line"></i></span>
-                </div>
             </div>
             <ul class="menu__items">
                 <li>
