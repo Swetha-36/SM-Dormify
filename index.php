@@ -149,10 +149,11 @@
                             <div class="input-group">
                                 <input type="password" name="t6" id="loginPassword"
                                     class="form-control shadow-none" placeholder="Enter your password" required />
-                                <button class="btn btn-outline-secondary shadow-none" type="button"
-                                    onclick="togglePassword('loginPassword', 'toggleLoginIcon')">
-                                    
-                                </button>
+                               <button class="btn btn-outline-secondary shadow-none" type="button"
+    onclick="togglePassword('loginPassword', 'toggleLoginIcon')">
+    <i class="ri-eye-line" id="toggleLoginIcon"></i>
+</button>
+
                             </div>
                         </div>
 
@@ -434,6 +435,35 @@ if (urlParams.has('openLogin') || urlParams.has('redirect')) {
     const newUrl = window.location.pathname;
     window.history.replaceState({}, document.title, newUrl);
 }
+</script>
+<script>
+document.querySelectorAll('[data-bs-target="#loginModal"]').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const registerModalEl = document.getElementById('registerModal');
+        const loginModalEl = document.getElementById('loginModal');
+
+        const registerModal = bootstrap.Modal.getInstance(registerModalEl);
+        if (registerModal) {
+            registerModal.hide();
+        }
+
+        setTimeout(() => {
+            const loginModal = new bootstrap.Modal(loginModalEl);
+            loginModal.show();
+        }, 300);
+    });
+});
+</script>
+<script>
+document.addEventListener('hidden.bs.modal', function () {
+    document.body.classList.remove('modal-open');
+
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+        backdrop.remove();
+    });
+});
 </script>
 
 

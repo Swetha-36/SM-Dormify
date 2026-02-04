@@ -31,7 +31,8 @@ $status = isset($_GET['status']) ? $_GET['status'] : 'success';
             <?php if ($status == 'pending'): ?>
                 <p class="lead">Your booking request has been received.</p>
                 <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i> Your payment will be verified within 24 hours. You'll receive a confirmation email once verified.
+                <p><h3>You’re all set! Your room is booked successfully. Get ready for a comfortable stay!</h3></p>
+                    
                 </div>
             <?php else: ?>
                 <p class="lead">Your booking has been confirmed.</p>
@@ -40,7 +41,7 @@ $status = isset($_GET['status']) ? $_GET['status'] : 'success';
             <p><strong>Order ID:</strong> <?php echo htmlspecialchars($order_id); ?></p>
             <p><strong>Amount:</strong> ₹<?php echo number_format($amount, 2); ?></p>
             <hr>
-            <a href="rooms1.php" class="btn btn-primary mt-3">Back to Rooms</a>
+            <a href="hostel1.php" class="btn btn-primary mt-3">Back to Rooms</a>
             <a href="index.php" class="btn btn-outline-secondary mt-3">Go to Home</a>
         </div>
     </div>

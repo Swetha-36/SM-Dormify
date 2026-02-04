@@ -78,8 +78,10 @@
 <div class="home">
     <div class="content">
         <h1>Welcome to SMDormify</h1>
-        <p>Your smart student living platform</p>
+        <P>K.Swetha(121323052024)</P>
+        <P>V.Manaswini(121323052026)</P>
     </div>
+
 
     <button class="enter-btn" onclick="openSite()">
         Enter Site →

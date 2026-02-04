@@ -11,6 +11,7 @@ $initial_filters = [
 
 // ✅ SAFE DEBUG - Only scalars, no arrays in echo
 ?>
+
 <!-- DEBUG INFO (Safe - no arrays) -->
 <script>
 console.log('🔍 PHP $_GET raw:', <?php echo json_encode($_GET); ?>);
@@ -27,7 +28,7 @@ console.log('🔍 Full URL:', <?php echo json_encode($_SERVER['REQUEST_URI']); ?
     <title>SM-Rooms</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Your existing CSS styles */
         @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap");
@@ -339,6 +340,9 @@ console.log('🔍 Full URL:', <?php echo json_encode($_SERVER['REQUEST_URI']); ?
 
 <body>
     <p style="font-size: 2.5rem; font-weight: 700; text-align: center; margin: 2rem 0;">
+        <a href="javascript:history.back()" class="btn back-btn">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
         Discover Your Perfect Hostel with Smart Filters
     </p>
 
@@ -500,7 +504,7 @@ console.log('🔍 Full URL:', <?php echo json_encode($_SERVER['REQUEST_URI']); ?
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // ✅ SINGLE SOURCE OF TRUTH: PHP passes filters directly to JS
     const initialFilters = <?php echo json_encode($initial_filters); ?>;
@@ -603,6 +607,8 @@ console.log('🔍 Full URL:', <?php echo json_encode($_SERVER['REQUEST_URI']); ?
         }
     }
 </script>
+
+
 
 
 </body>
